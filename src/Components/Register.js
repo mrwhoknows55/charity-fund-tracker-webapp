@@ -67,6 +67,7 @@ const Register = () => {
                 <Input type='text' placeholder='Username' />
               </InputGroup>
             </FormControl>
+
             <FormControl>
               <InputGroup>
                 <InputLeftElement
@@ -76,6 +77,7 @@ const Register = () => {
                 <Input type='email' placeholder='Email Address' name='email' />
               </InputGroup>
             </FormControl>
+            
             <FormControl>
               <InputGroup>
                 <InputLeftElement
