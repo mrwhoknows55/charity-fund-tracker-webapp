@@ -1,14 +1,16 @@
 import React, { Component } from 'react';
 import {
-  VStack, Heading,
+  VStack, Heading, Flex,
 } from '@chakra-ui/react';
 
 class Home extends Component {
   render() {
     return (<>
-      <VStack spacing={8}>
-        <Heading as={'h1'}>Charity Fund Tracking Web App</Heading>
-      </VStack>
+      <Flex spacing={8} justifyContent={'center'}>
+        <Flex mt={'5rem'} >
+          <Heading as={'h1'}>Charity Fund Tracking Web App</Heading>
+        </Flex>
+      </Flex>
     </>);
   }
 }

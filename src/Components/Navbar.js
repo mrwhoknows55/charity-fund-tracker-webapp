@@ -21,7 +21,7 @@ export default function Navbar(props) {
   const { children } = props;
 
   return (<>
-    <Box position={'fixed'} width={'100vw'} bg={useColorModeValue('gray.100', 'gray.900')} px={4}>
+    <Box position={'fixed'} width={'100vw'} height={'auto'} bg={useColorModeValue('gray.100', 'gray.900')} px={4}>
       <Flex h={16} alignItems={'center'} justifyContent={'space-between'}>
         <Box>FundTracking</Box>
 
