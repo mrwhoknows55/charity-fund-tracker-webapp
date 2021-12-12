@@ -7,6 +7,9 @@ import Home from './Components/Home';
 import Navbar from './Components/Navbar';
 import Login from './Components/Login';
 import Register from './Components/Register';
+import UserHome from './Components/UserHome';
+import About from './Components/About';
+
 
 class App extends PureComponent {
   render() {
@@ -18,6 +21,8 @@ class App extends PureComponent {
               <Route exact path='/' component={Home} />
               <Route exact path='/login' component={Login} />
               <Route exact path='/register' component={Register} />
+              <Route exact path='/userHome' component= {UserHome} />
+              <Route exact path='/about' component= {About} />
             </Switch>
           </Navbar>
         </Box>

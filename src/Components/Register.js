@@ -113,6 +113,7 @@ const SignUp = (props) => {
                 />
               </InputGroup>
             </FormControl>
+
             <FormControl>
               <InputGroup>
                 <InputLeftElement
@@ -164,6 +165,7 @@ const SignUp = (props) => {
                 />
               </InputGroup>
             </FormControl>
+            
             <FormControl>
               <InputGroup>
                 <InputLeftElement
