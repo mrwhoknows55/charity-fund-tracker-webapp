@@ -32,9 +32,18 @@ const Login = () => {
     axios.post('https://fundtracking.herokuapp.com/doners/login', { email: email, password: password })
       .then(response => {
         console.log(response);
+        if (response.data && response.data.access_tocken) {
+          const token = response.data.access_token;
+          console.log('token', token);
+          document.cookie = 'access_token=' + token;
+          window.location.href = '/userHome';
+        } else {
+          const err = response.data.message;
+          throw Error('Error: ' + err);
+        }
       }).catch(err => {
-      console.log('error!');
       console.log(err);
+      window.alert(err.message);
     });
   };
 
