@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
 import {
-  VStack, Heading, Flex,
+  Heading, Flex,
 } from '@chakra-ui/react';
 
 class Home extends Component {
+  componentDidMount() {
+    window.location.href = "/login";
+  }
   render() {
     return (<>
       <Flex spacing={8} justifyContent={'center'}>

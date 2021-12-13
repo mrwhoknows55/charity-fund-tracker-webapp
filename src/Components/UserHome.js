@@ -8,6 +8,13 @@ import axios from "axios";
 
 const IMAGE1 =
   'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRHYc1L-5gY5vASNBQMBquJzPaTfPuDHHU4pLPiBcLQuA4Jb4vc-K5_N4Gv9Dl7vSZPqlc&usqp=CAU';
+const IMAGE2 =
+  'https://st.depositphotos.com/1364916/2428/v/600/depositphotos_24283903-stock-illustration-teamwork-hands-and-sun-logo.jpg';
+const IMAGE3 =
+  'https://thumbs.dreamstime.com/b/helping-hands-care-hands-logo-icon-vector-designs-white-background-ai-illustrations-globe-people-helping-hands-care-hands-162171839.jpg';
+const IMAGE4 =
+  'https://st.depositphotos.com/1364916/2565/v/950/depositphotos_25654255-stock-illustration-teamwork-hands-and-connections-logo.jpg';
+
 export default function ProductSimple() {
 
     const [charities, setCharities] = useState([]);
@@ -72,7 +79,7 @@ export default function ProductSimple() {
                                 height={230}
                                 width={282}
                                 objectFit={'cover'}
-                                src={IMAGE1}
+                                src={(charity.charity_id%4===0)?IMAGE1:(charity.charity_id%4===1)?IMAGE2:(charity.charity_id%4===3)?IMAGE3:IMAGE4}
                             />
                             </Box>
                             <Stack pt={10} align={'center'}>

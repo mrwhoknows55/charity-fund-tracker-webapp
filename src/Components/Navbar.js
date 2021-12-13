@@ -22,6 +22,7 @@ export default function Navbar(props) {
   const { colorMode, toggleColorMode } = useColorMode();
   const { children } = props;
   const [username, setUsername] = useState('Guest');
+  const [loggedIn, setLoggedIn] = useState(false);
 
   useEffect(() => {
     let access_token = getCookie('access_token');
@@ -33,11 +34,37 @@ export default function Navbar(props) {
         .then(response => {
           if (response.data.status) {
             setUsername(response.data.doner.username);
+            setLoggedIn(true);
             console.log(response.data.doner.username);
           }
         });
     }
   });
+
+  const onLogout = (e) => {
+    e.preventDefault();
+    var access_token = getCookie('access_token');
+      if(access_token!=null) {
+          axios.post('https://fundtracking.herokuapp.com/doners/logout', undefined, {headers: {'Authorization': 'Bearer '+access_token}})
+          .then(response=>{
+              console.log(response);
+              if(response.data.status){
+                  console.log('successfully logged out!');
+                  document.cookie = "access_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+              }else{
+                  console.log('something went wrong!');
+              }
+          }).catch(e=>{
+              document.cookie = "access_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+              console.log(e);
+          }).finally(() => {
+            window.location.href="/login";
+          });
+        }else{
+          console.log('already logged out!');
+          window.location.href="/login";
+      }
+  }
 
   return (
     <>
@@ -92,9 +119,16 @@ export default function Navbar(props) {
                   </Center>
                   <br />
                   <MenuDivider />
-                  <a href={'/login'}>
-                    <MenuItem>Login</MenuItem>
-                  </a>
+                  {
+                    (loggedIn)?
+                    <a href={'/login'} onClick={onLogout}>
+                      <MenuItem>Logout</MenuItem>
+                    </a>
+                    :
+                    <a href={'/login'}>
+                      <MenuItem>Login</MenuItem>
+                    </a>
+                  }
                 </MenuList>
               </Menu>
             </Stack>

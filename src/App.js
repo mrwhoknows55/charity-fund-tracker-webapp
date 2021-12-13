@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { BrowserRouter as Switch, Route } from 'react-router-dom';
 import {
-  ChakraProvider, Box, theme, Heading,
+  ChakraProvider, Box, theme,
 } from '@chakra-ui/react';
 import Home from './Components/Home';
 import Navbar from './Components/Navbar';
