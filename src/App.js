@@ -23,10 +23,9 @@ class App extends PureComponent {
               <Route exact path='/login' component={Login} />
               <Route exact path='/register' component={Register} />
               <Route exact path='/about' component={About} />
-              <Route exact path='/ngoRegister' component={NgoRegister} />
-              <Route exact path='/about' component={About} />
-              <Route exact path='/ngoInformation' component={NgoInformation} />
               <Route exact path='/charity/:username' component={CharityDetails} />
+              <Route exact path='/ngoRegister' component={NgoRegister} />
+              <Route exact path='/ngoInformation' component={NgoInformation} />
             </Switch>
           </Navbar>
         </Box>

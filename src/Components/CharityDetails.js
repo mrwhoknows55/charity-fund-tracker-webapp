@@ -1,4 +1,4 @@
-import { Box, Center, Flex, Heading, HStack, Image, SimpleGrid, Square, Text, VStack } from '@chakra-ui/react';
+import { Flex, Heading, HStack, Image, Text, VStack } from '@chakra-ui/react';
 import { useParams } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
@@ -33,13 +33,13 @@ function CharityDetails() {
                   {charity.name}
                 </Heading>
                 <Text>
-                  Founded on: {charity.founded_in}
+                  Founded on: {(charity.charityDetails && charity.charityDetails.founded_in) ? charity.charityDetails.total_fundings : ""}
                 </Text>
                 <Text>
-                  Total Funding: {charity.total_fundings}
+                  Total Funding: {(charity.charityDetails && charity.charityDetails.total_fundings) ? charity.charityDetails.total_fundings : ``}
                 </Text>
                 <Text>
-                  Total expenditure: {charity.total_expenditure}
+                  Total expenditure: {(charity.charityDetails && charity.charityDetails.total_expenditure) ? charity.charityDetails.total_expenditure : `` }
                 </Text>
               </VStack>
             </HStack>
