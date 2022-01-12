@@ -90,6 +90,12 @@ export default function Navbar(props) {
               <a href={'/'}>
                 <Button>Home</Button>
               </a>
+              <a href={'/ngoInformation'}>
+                <Button>NGO</Button>
+              </a>
+              <a href={'/about'}>
+                <Button>About</Button>
+              </a>
 
               {/* Dummy Button for UserHome Ends */}
 
