@@ -48,7 +48,7 @@ const SignUp = (props) => {
       phone1: phone,
       email: email,
       password: password,
-    //   dob: dob,
+      founded_in: "24-10-2000" ,
       username: userName,
       logo:logo,
       certificate: certificate,
