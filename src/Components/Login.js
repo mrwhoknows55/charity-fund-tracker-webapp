@@ -40,7 +40,7 @@ const Login = () => {
           const token = response.data.access_token;
           console.log('token', token);
           document.cookie = 'access_token=' + token;
-          window.location.href = '/userHome';
+          window.location.href = '/';
         } else {
           const err = response.data.message;
           throw Error('Error: ' + err);

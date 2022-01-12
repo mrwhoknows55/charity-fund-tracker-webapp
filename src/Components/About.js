@@ -8,7 +8,7 @@ class Home extends Component {
     return (<>
       <VStack spacing={8}>
         <h1>About Page</h1>
-        <hr/>
+        <hr />
       </VStack>
     </>);
   }
