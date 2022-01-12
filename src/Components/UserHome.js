@@ -105,7 +105,7 @@ export default function ProductSimple() {
                         ${charity.total_expenditure}
                       </Text>
                     </Stack>
-                    <Button onClick={(e) => openCharityDetails(e, charity.charity_id)}> More Information </Button>
+                    <Button onClick={(e) => openCharityDetails(e, charity.username)}> More Information </Button>
                   </Stack>
                 </Box>
               </React.Fragment>,
