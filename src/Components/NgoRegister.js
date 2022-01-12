@@ -14,9 +14,10 @@ import {
   FormControl,
   InputRightElement,
   VStack,
+  Image,
 } from '@chakra-ui/react';
 import {
-  FaUserAlt, FaLock, FaBirthdayCake, FaWallet, FaEnvelopeOpen, FaEye, FaEyeSlash, FaPhone,
+  FaUserAlt, FaLock, FaBirthdayCake, FaWallet, FaEnvelopeOpen, FaEye, FaEyeSlash, FaPhone, FaFile,FaImage,
 } from 'react-icons/fa';
 import ConnectingToWallet from './ConnectingToWallet';
 import axios from 'axios';
@@ -35,18 +36,22 @@ const SignUp = (props) => {
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
-  const [dob, setDob] = useState('');
+  const [certificate, setCertificate] = useState('');
+  const [logo, setLogo] = useState('');
+//   const [dob, setDob] = useState('');
 
   const submit = (e) => {
     e.preventDefault();
 
-    axios.post('https://fundtracking.herokuapp.com/doners/register', {
+    axios.post('https://fundtracking.herokuapp.com/doners/ngoRegister', {
       name: name,
       phone1: phone,
       email: email,
       password: password,
-      dob: dob,
+    //   dob: dob,
       username: userName,
+      logo:logo,
+      certificate: certificate,
       meta_wallet_address: walletAddress,
     })
       .then(response => {
@@ -69,7 +74,7 @@ const SignUp = (props) => {
   return (<Flex
     flexDirection='column'
     width='100wh'
-    height='70vh'
+    height='80vh'
     justifyContent='center'
     alignItems='center'>
     <Stack
@@ -90,7 +95,7 @@ const SignUp = (props) => {
           >
             <VStack justifyContent={'center'} flexDirection={'column'} justifyItems={'center'}>
               <Avatar bg='teal.500' />
-              <Heading color='teal.400' >User SignUp</Heading>
+              <Heading color='teal.400' >NGO SignUp</Heading>
             </VStack>
 
             <FormControl >
@@ -100,7 +105,7 @@ const SignUp = (props) => {
                   children={<CFaUserAlt color='gray.500' />}
                 />
                 <Input isRequired={true} _placeholder={{ color: 'gray.300' }} value={name}
-                       onChange={e => setName(e.target.value)} type='text' placeholder='Full Name' />
+                       onChange={e => setName(e.target.value)} type='text' placeholder='NGO Name' />
               </InputGroup>
             </FormControl>
             
@@ -124,7 +129,7 @@ const SignUp = (props) => {
                   children={<FaEnvelopeOpen color='gray.500' />}
                 />
                 <Input
-                  isRequired={true}
+                //   isRequired={true}
                   _placeholder={{ color: 'gray.300' }}
                   type='email'
                   placeholder='Email Address'
@@ -138,6 +143,7 @@ const SignUp = (props) => {
               <InputGroup>
                 <InputLeftElement
                   pointerEvents='none'
+                  
                   color='gray.500'
                   children={<FaPhone color='gray.500' />}
                 />
@@ -153,7 +159,7 @@ const SignUp = (props) => {
               </InputGroup>
             </FormControl>
             
-            <FormControl>
+            {/* <FormControl>
               <InputGroup>
                 <InputLeftElement
                   pointerEvents='none'
@@ -169,7 +175,8 @@ const SignUp = (props) => {
                 />
               </InputGroup>
             </FormControl>
-            
+             */}
+
             <FormControl>
               <InputGroup>
                 <InputLeftElement
@@ -191,6 +198,68 @@ const SignUp = (props) => {
                 </InputRightElement>
               </InputGroup>
             </FormControl>
+
+
+{/* File Uploading Start*/}
+            
+<FormControl>
+              <InputGroup>
+                <InputLeftElement
+                  pointerEvents='none'
+                  color='gray.500'
+                  children={<FaFile color='gray.500' />}
+                />
+                <Input
+
+                  _placeholder={{ color: 'gray.300' }}
+                  placeholder='Upload 80G Certi'
+                />
+                <InputRightElement width='16rem'>
+                 
+                 <Input
+                    required='true'
+                   _placeholder={{ color: 'gray.300' }}
+                   type="file"
+                   placeholder='Upload 80G Certificate'
+                   name='certificate'
+                   value={certificate} onChange={e => setCertificate(e.target.value)}
+                 />
+                 </InputRightElement>
+               
+              </InputGroup>
+            </FormControl>
+{/* File Uploading End*/}
+
+
+{/* Logo Uploading Start*/}
+            <FormControl>
+              <InputGroup>
+                <InputLeftElement
+                  pointerEvents='none'
+                  color='gray.500'
+                  children={<FaFile color='gray.500' />}
+                />
+                <Input
+
+                  _placeholder={{ color: 'gray.300' }}
+                  placeholder='Upload Logo'
+                />
+                <InputRightElement width='18rem'>
+                 
+                 <Input
+                    required='true'
+                   _placeholder={{ color: 'gray.300' }}
+                   type="file"
+                   placeholder='Upload Logo'
+                   name='logo'
+                   value={logo} onChange={e => setLogo(e.target.value)}
+                 />
+                 </InputRightElement>
+               
+              </InputGroup>
+            </FormControl>
+{/* Logo Uploading End*/}
+
             
             <FormControl>
               <InputGroup>
@@ -223,15 +292,15 @@ const SignUp = (props) => {
       </Link>
     </Box>
     <Box>
-      NGO Sign Up?{' '}
-      <Link color='teal.500' href={'/ngoRegister'}>
-        NGO SignUp
+      User Sign Up?{' '}
+      <Link color='teal.500' href={'/Register'}>
+        User SignUp
       </Link>
     </Box>
   </Flex>);
 };
 
-const Register = () => {
+const NgoRegister = () => {
 
   const { ethereum } = window;
   const [isMetamaskInstalled] = useState(ethereum !== undefined);
@@ -297,4 +366,4 @@ const Register = () => {
   </>);
 };
 
-export default Register;
+export default NgoRegister;

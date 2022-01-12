@@ -7,8 +7,10 @@ import Home from './Components/Home';
 import Navbar from './Components/Navbar';
 import Login from './Components/Login';
 import Register from './Components/Register';
+import NgoRegister from './Components/NgoRegister';
 import UserHome from './Components/UserHome';
 import About from './Components/About';
+import NgoInformation from './Components/NgoInformation'
 
 
 class App extends PureComponent {
@@ -21,8 +23,10 @@ class App extends PureComponent {
               <Route exact path='/' component={Home} />
               <Route exact path='/login' component={Login} />
               <Route exact path='/register' component={Register} />
+              <Route exact path='/ngoRegister' component={NgoRegister} />
               <Route exact path='/userHome' component= {UserHome} />
               <Route exact path='/about' component= {About} />
+              <Route exact path='/ngoInformation' component= {NgoInformation} />
             </Switch>
           </Navbar>
         </Box>

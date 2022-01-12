@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from "react-router-dom";
 import {
   VStack, Heading, Box, Text,Center,Stack,Image,Button,
   SimpleGrid
 } from '@chakra-ui/react';
 import axios from "axios";
+import { useHistory } from 'react-router-dom';
 
 
 const IMAGE1 =
@@ -16,7 +18,7 @@ const IMAGE4 =
   'https://st.depositphotos.com/1364916/2565/v/950/depositphotos_25654255-stock-illustration-teamwork-hands-and-connections-logo.jpg';
 
 export default function ProductSimple() {
-
+    const history = useHistory();
     const [charities, setCharities] = useState([]);
 
     useEffect(()=> {
@@ -104,9 +106,10 @@ export default function ProductSimple() {
                                 ${charity.total_expenditure}
                                 </Text>
                             </Stack>
-                            <Button>
-                                More information
-                            </Button>
+
+                            <a href={'/ngoInformation'}>
+                                <Button>More Information</Button>
+                            </a>
                             </Stack>
 
 
