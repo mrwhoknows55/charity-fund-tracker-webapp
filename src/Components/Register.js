@@ -55,7 +55,7 @@ const SignUp = (props) => {
           const token = response.data.access_token;
           console.log('token', token);
           document.cookie = 'access_token=' + token;
-          window.location.href = '/userHome';
+          window.location.href = '/';
         } else {
           const err = response.data.message;
           throw Error('Error: ' + err);
@@ -169,7 +169,7 @@ const SignUp = (props) => {
                 />
               </InputGroup>
             </FormControl>
-            
+
             <FormControl>
               <InputGroup>
                 <InputLeftElement
@@ -217,7 +217,8 @@ const SignUp = (props) => {
       </Box>
     </Stack>
     <Box>
-      Have Account?{' '}
+      Have Account?
+      <br />
       <Link color='teal.500' href={'/login'}>
         Sign In
       </Link>

@@ -43,28 +43,28 @@ export default function Navbar(props) {
 
   const onLogout = (e) => {
     e.preventDefault();
-    var access_token = getCookie('access_token');
-      if(access_token!=null) {
-          axios.post('https://fundtracking.herokuapp.com/doners/logout', undefined, {headers: {'Authorization': 'Bearer '+access_token}})
-          .then(response=>{
-              console.log(response);
-              if(response.data.status){
-                  console.log('successfully logged out!');
-                  document.cookie = "access_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-              }else{
-                  console.log('something went wrong!');
-              }
-          }).catch(e=>{
-              document.cookie = "access_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-              console.log(e);
-          }).finally(() => {
-            window.location.href="/login";
-          });
-        }else{
-          console.log('already logged out!');
-          window.location.href="/login";
-      }
-  }
+    const access_token = getCookie('access_token');
+    if (access_token != null) {
+      axios.post('https://fundtracking.herokuapp.com/doners/logout', undefined, { headers: { 'Authorization': 'Bearer ' + access_token } })
+        .then(response => {
+          console.log(response);
+          if (response.data.status) {
+            console.log('successfully logged out!');
+            document.cookie = 'access_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+          } else {
+            console.log('something went wrong!');
+          }
+        }).catch(e => {
+        document.cookie = 'access_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+        console.log(e);
+      }).finally(() => {
+        window.location.href = '/login';
+      });
+    } else {
+      console.log('already logged out!');
+      window.location.href = '/login';
+    }
+  };
 
   return (
     <>
@@ -74,6 +74,7 @@ export default function Navbar(props) {
         height={'auto'}
         bg={useColorModeValue('gray.100', 'gray.900')}
         px={4}
+        zIndex={4}
       >
         <Flex h={16} alignItems={'center'} justifyContent={'space-between'}>
           <Box>FundTracking</Box>
@@ -86,7 +87,7 @@ export default function Navbar(props) {
 
               {/* Dummy Button for UserHome Start*/}
 
-              <a href={'/userHome'}>
+              <a href={'/'}>
                 <Button>Home</Button>
               </a>
               <a href={'/ngoInformation'}>
@@ -126,14 +127,16 @@ export default function Navbar(props) {
                   <br />
                   <MenuDivider />
                   {
-                    (loggedIn)?
-                    <a href={'/login'} onClick={onLogout}>
-                      <MenuItem>Logout</MenuItem>
-                    </a>
-                    :
-                    <a href={'/login'}>
-                      <MenuItem>Login</MenuItem>
-                    </a>
+                    (loggedIn) ?
+                      <MenuItem onClick={(e) => onLogout(e)}>
+                        Logout
+                      </MenuItem>
+                      :
+                      <MenuItem onClick={() => {
+                        window.location.href = '/login';
+                      }}>
+                        Login
+                      </MenuItem>
                   }
                 </MenuList>
               </Menu>
