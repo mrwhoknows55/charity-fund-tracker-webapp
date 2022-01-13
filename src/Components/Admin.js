@@ -11,6 +11,8 @@ import {
   useColorModeValue,
   Button,
   Stack,
+  HStack,
+  Avatar,
 } from '@chakra-ui/react';
 import axios from 'axios';
 import { useHistory } from 'react-router-dom';
@@ -19,6 +21,35 @@ import { getCookie } from '../utils/getCookie';
 export default function Admin () {
   const history = useHistory();
   const [charities, setCharities] = useState([]);
+  const [recentTrans, setResetTrans] = useState([]);
+  // const [profileImg, setProfileImg] = useState(
+  //   'https://avatars.dicebear.com/api/male/username.svg'
+  // );
+
+  const dailyTransactions = [
+    {
+      name: 'Manohar Shatri',
+      date: '15-01-2022',
+      value: '7,80,000',
+      to: 'Being Human',
+      profile_image:
+        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQNOhpV67XSI4Vz5Z_L7XoWiH7UzZQDBTzS3g&usqp=CAU',
+    },
+    {
+      name: 'Anonymous',
+      date: '15-01-2022',
+      value: '47,000',
+      to: 'Being Human',
+    },
+    {
+      name: 'Rajiv Patil',
+      date: '15-01-2022',
+      value: '3,00,000',
+      to: 'Palak Charitable Trust',
+      profile_image:
+        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQNOhpV67XSI4Vz5Z_L7XoWiH7UzZQDBTzS3g&usqp=CAU',
+    },
+  ];
 
   useEffect(() => {
     const access_token = getCookie('access_token');
@@ -31,6 +62,7 @@ export default function Admin () {
         console.log(response);
         if (response.data.status) {
           setCharities(response.data.charities);
+          // setProfileImg(response.data.user.profile_image);
           console.log(response.data.charities);
         }
       })
@@ -68,10 +100,11 @@ export default function Admin () {
           <Flex color='white' spacing='20px'>
             {/* --------------------- NGO REQUEST BOX START----------------------------- */}
             <Box
-              w='1100px'
+              w={{ sm: '100%', md: '68rem' }}
               bg={useColorModeValue('gray.200', 'gray.700')}
               padding='15px'
               margin='10px'
+              borderRadius={10}
             >
               <Heading
                 textColor={useColorModeValue('gray.900', 'gray.100')}
@@ -85,35 +118,46 @@ export default function Admin () {
               <SimpleGrid columns={1} spacingX='40px' spacingY='20px'>
                 {charities.map(charity => (
                   <React.Fragment key={charity.charity_id}>
-                    <Box bg={'gray.500'} height='130px' borderRadius='15px'>
-                      <Flex justifyContent={'space-between'}>
-                        <div>
-                          <Text
-                            fontSize='3xl'
-                            fontFamily={'mono'}
-                            marginLeft={'20px'}
-                            marginTop={'5px'}
-                            textColor={'black'}
-                          >
+                    <Stack
+                      borderWidth='1px'
+                      borderRadius='xl'
+                      marginLeft={'8PX'}
+                      w={{ sm: '100%', md: '65rem' }}
+                      height={{ sm: '476px', md: '9rem' }}
+                      direction={{ base: 'column', md: 'row' }}
+                      boxShadow={'2xl'}
+                      bg='gray.100'
+                      padding={4}
+                    >
+                      <Center>
+                        <Avatar
+                          size={'xl'}
+                          src={
+                            charity.profile_image
+                              ? charity.profile_image
+                              : 'https://avatars.dicebear.com/api/male/username.svg'
+                          }
+                          alt={'Avatar Alt'}
+                          mb={4}
+                          pos={'relative'}
+                        />
+                      </Center>
+
+                      <HStack width={'50vw'} justifyContent={'space-between'}  >
+                        <VStack spacing={2} padding={10}  >
+                          <Text as='b' fontSize='2xl' textColor={'black'}  >
                             {charity.name}
                           </Text>
-                          <Text
-                            fontSize='xl'
-                            fontStyle={'italic'}
-                            marginLeft={'15px'}
-                            textColor={'black'}
-                          >
-                            {charity.requested_time}
+                          <Text as='i' fontSize='md' textColor={'black'} position={'relative'} left={-10} >
+                            Date: {charity.requested_time}
                           </Text>
-
-                          {/* TODO : Align */}
-                          <a href={`/charity/${charity.username}`} >
-                            <Button colorScheme='teal' variant='outline'>
+                          <a href={`/charity/${charity.username}`}>
+                            <Button colorScheme='teal' variant='outline' position={'relative'} left={-10} >
                               Details
                             </Button>
                           </a>
-                        </div>
-                        <Stack spacing={3} align='center' padding={'15px'}>
+                        </VStack>
+                        <Stack spacing={3} padding={5}>
                           <Button
                             colorScheme='teal'
                             variant='solid'
@@ -135,8 +179,8 @@ export default function Admin () {
                             Reject
                           </Button>
                         </Stack>
-                      </Flex>
-                    </Box>
+                      </HStack>
+                    </Stack>
                   </React.Fragment>
                 ))}
               </SimpleGrid>
@@ -145,6 +189,7 @@ export default function Admin () {
             {/* --------------------- NGO REQUEST BOX END----------------------------- */}
 
             {/* ---------------------   RECENT TRANSACTION BOX START ----------------------------- */}
+
             <Box
               bg={useColorModeValue('gray.300', 'gray.900')}
               w='700px'
@@ -156,13 +201,55 @@ export default function Admin () {
               <Heading marginBottom='15px'>Recent Transactions </Heading>
 
               <SimpleGrid columns={1} spacingX='40px' spacingY='20px'>
-                <Box
-                  bg={useColorModeValue('white', 'gray.600')}
-                  height='80px'
-                  borderRadius='15px'
-                >
-                  <h1>... This Field Under Construction ...</h1>
-                </Box>
+                {dailyTransactions.map(charity => (
+                  <React.Fragment key={charity.charity_id}>
+                    <Stack
+                      borderWidth='1px'
+                      borderRadius='xl'
+                      marginLeft={'8PX'}
+                      w={{ sm: '100%', md: '40rem' }}
+                      height={{ sm: '476px', md: '9rem' }}
+                      direction={{ base: 'column', md: 'row' }}
+                      boxShadow={'2xl'}
+                      bg='gray.200'
+                      padding={4}
+                    >
+                      <Center>
+                        <Avatar
+                          size={'xl'}
+                          src={
+                            charity.profile_image
+                              ? charity.profile_image
+                              : 'https://avatars.dicebear.com/api/male/username.svg'
+                          }
+                          alt={'Avatar Alt'}
+                          mb={4}
+                          pos={'relative'}
+                        />
+                      </Center>
+                      <HStack width={'30vw'} justifyContent={'space-between'}  >
+                        <VStack spacing={2} padding={10}>
+                          <Text as='b' fontSize='2xl' textColor={'black'}>
+                            {charity.name}
+                          </Text>
+                          <Text as='b' fontSize='md' textColor={'black'}>
+                            Donated to {charity.to}
+                          </Text>
+                          <Text as='i' fontSize='md' textColor={'black'}>
+                            Date: {charity.date}
+                          </Text>
+                          
+                        </VStack>
+                        <Stack spacing={3} padding={5}>
+                          
+                        <Text as='b' padding={5} fontSize='3xl'  align='left'>
+                          ₹{charity.value }
+                        </Text>
+                        </Stack>
+                      </HStack>
+                    </Stack>
+                  </React.Fragment>
+                ))}
               </SimpleGrid>
             </Box>
 
