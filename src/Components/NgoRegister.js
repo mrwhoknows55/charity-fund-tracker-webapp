@@ -71,7 +71,7 @@ const CharitySignup = (props) => {
           const token = response.data.access_token;
           console.log('token', token);
           document.cookie = 'access_token=' + token;
-          window.location.href = '/charity';
+          // window.location.href = '/charity';
         } else {
           const err = response.data.message;
           throw Error('Error: ' + err);
@@ -206,7 +206,10 @@ const CharitySignup = (props) => {
                   _placeholder={{ color: 'gray.300' }}
                   ref={dateRef} type='text' placeholder='mm/dd/yyyy' onFocus={() => dateRef.current.type = 'date'}
                   onBlur={() => dateRef.current.type = 'text'}
-                  value={dob} onChange={e => setDob(e.target.value)}
+                  value={dob} onChange={(e) => {
+                  console.log(e.target.value);
+                  setDob(e.target.value);
+                }}
                 />
               </InputGroup>
             </FormControl>

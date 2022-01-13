@@ -34,7 +34,8 @@ export default function ProductSimple() {
           {
             charities.map((charity) =>
               <React.Fragment key={charity.charity_id}>
-                <Box role={'group'} p={6} maxW={'22vw'} w={'full'}
+                <Box onClick={(e) => openCharityDetails(e, charity.username)} role={'group'} p={6} maxW={'22vw'}
+                     w={'full'}
                      boxShadow={'2xl'} rounded={'lg'} pos={'relative'} zIndex={1}>
                   <Box
                     rounded={'lg'}
@@ -80,23 +81,20 @@ export default function ProductSimple() {
                     <br />
                     <Flex direction={'column'}>
                       <Stack direction={'row'} align='flex-start'>
-                        <Text fontWeight={800} fontSize={'xl'}>
-                          Funds :
-                        </Text>
-                        <Text color={'gray.600'}>
-                          ${charity.total_fundings}
+                        <Text fontWeight={600} fontSize={'xl'}>
+                          Funds: ₹ {charity.total_fundings}
                         </Text>
                       </Stack>
                       <Stack direction={'row'} align='flex-start'>
-                        <Text fontWeight={800} fontSize={'xl'}>
-                          Expenditure :
-                        </Text>
-                        <Text color={'gray.600'}>
-                          ${charity.total_expenditure}
+                        <Text fontWeight={600} fontSize={'xl'}>
+                          Expenditure: ₹ {charity.total_expenditure}
                         </Text>
                       </Stack>
                     </Flex>
-                    <Button onClick={(e) => openCharityDetails(e, charity.username)}> More Information </Button>
+                    <Flex paddingTop={'2vh'}>
+                      <Button background={'teal.500'} textColor={'white'} onClick={(e) => openCharityDetails(e, charity.username)}> More
+                        Information </Button>
+                    </Flex>
                   </Stack>
                 </Box>
               </React.Fragment>,
