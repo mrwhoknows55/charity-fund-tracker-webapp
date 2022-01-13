@@ -124,7 +124,15 @@ export default function Navbar(props) {
                     <a href={'/admin/donors'}>
                       <Button>Donors</Button>
                     </a>
-                  </> : <></>
+                  </>
+                  : (accountType === 'charity') ?
+                    <>
+                      {/*TODO Create these pages*/}
+                      <a href={'/admin/donors'}>
+                        <Button>Donors</Button>
+                      </a>
+                    </>
+                    : <></>
               }
               <a href={'/about'}>
                 <Button>About</Button>
@@ -161,11 +169,11 @@ export default function Navbar(props) {
                   <MenuDivider />
                   {
                     (loggedIn) ? <>
-                        <MenuItem onClick={(e) => onLogout(e)}>
-                          Logout
-                        </MenuItem>
                         <MenuItem onClick={(e) => onEditProfile(e)}>
                           Edit Profile
+                        </MenuItem>
+                        <MenuItem onClick={(e) => onLogout(e)}>
+                          Logout
                         </MenuItem>
                       </>
                       :

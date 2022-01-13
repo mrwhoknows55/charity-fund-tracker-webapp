@@ -1,4 +1,4 @@
-import { Avatar, Center, HStack, Stack, Text, useColorModeValue, VStack } from '@chakra-ui/react';
+import { Avatar, Center, Heading, HStack, Stack, Text, useColorModeValue, VStack } from '@chakra-ui/react';
 
 export default function DonationCard(props) {
   return (
@@ -14,24 +14,23 @@ export default function DonationCard(props) {
         padding={4}>
         <Center>
           <Avatar
-            size={'xl'}
+            size={'2xl'}
             src={props.avatarUrl}
             alt={'Avatar Alt'}
-            mb={4}
             pos={'relative'}
           />
         </Center>
         <HStack width={'40vw'} justifyContent={'space-between'}>
-          <VStack spacing={2} padding={10}>
-            <Text as='b' fontSize='xl'>
-              { props.name }
-            </Text>
+          <VStack spacing={2} padding={10} alignItems={'flex-start'}>
+            <Heading fontSize={'2xl'}>
+              {props.name}
+            </Heading>
             <Text as='i' fontSize='sm'>
-              { props.date }
+              {props.date}
             </Text>
           </VStack>
-          <Text as='b' padding={10} fontSize='4xl' align='left'>
-            $ { props.value }
+          <Text as='b' padding={10} fontSize='4xl'>
+            $ {props.value}
           </Text>
         </HStack>
       </Stack>

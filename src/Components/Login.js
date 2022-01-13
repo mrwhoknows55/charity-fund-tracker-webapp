@@ -62,7 +62,7 @@ const Login = () => {
           throw Error('Error: ' + err);
         }
       })
-      .catch(err => {
+      .catch((err) => {
         console.log(err);
         window.alert(err.message);
       });

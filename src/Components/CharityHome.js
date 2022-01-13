@@ -1,95 +1,110 @@
 import { Avatar, Button, Center, Heading, HStack, VStack } from '@chakra-ui/react';
 import DonationCard from './DonationCard';
 import ReportCard from './ReportCard';
-
-const donations = [
-  {
-    avatarUrl: 'https://images.unsplash.com/photo-1520810627419-35e362c5dc07?ixlib=rb-1.2.1&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&ixid=eyJhcHBfaWQiOjE3Nzg0fQ',
-    name: 'Donor Name',
-    date: 'DD-MM-YYYY',
-    value: '12346',
-  },
-  {
-    avatarUrl: 'https://images.unsplash.com/photo-1520810627419-35e362c5dc07?ixlib=rb-1.2.1&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&ixid=eyJhcHBfaWQiOjE3Nzg0fQ',
-    name: 'Donor Name',
-    date: 'DD-MM-YYYY',
-    value: '12346',
-  },
-  {
-    avatarUrl: 'https://images.unsplash.com/photo-1520810627419-35e362c5dc07?ixlib=rb-1.2.1&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&ixid=eyJhcHBfaWQiOjE3Nzg0fQ',
-    name: 'Donor Name',
-    date: 'DD-MM-YYYY',
-    value: '12346',
-  },
-];
-
-const expenses = [
-  {
-    title: 'RO Purifying machine',
-    date: '23-04-2021',
-    value: '7,80,000',
-  },
-  {
-    title: 'Books for school students',
-    date: '13-02-2021',
-    value: '10,80,000',
-  },
-  {
-    title: 'New sports equipments on playgrounds',
-    date: '2-11-2020',
-    value: '4,80,000',
-  },
-];
+import { useEffect, useState } from 'react';
+import axios from 'axios';
 
 export default function CharityHome() {
+
+  const [profileImg, setProfileImg] = useState('https://avatars.dicebear.com/api/male/username.svg');
+  const [charityName, setCharityName] = useState('Charity Name');
+  const [expenses, setExpenses] = useState([]);
+  const [donations, setDonations] = useState([]);
+  const access_token = window.sessionStorage.getItem('access_token');
+
+  useEffect(() => {
+    axios.get('https://fundtracking.herokuapp.com/user/profile', {
+      headers: { Authorization: 'Bearer ' + access_token },
+    })
+      .then(response => {
+        if (response.data.status) {
+          setProfileImg(response.data.user.profile_image);
+          setCharityName(response.data.user.name);
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+
+    axios.get('https://fundtracking.herokuapp.com/charity/profile/expenses', { headers: { 'Authorization': 'Bearer ' + access_token } })
+      .then((response) => {
+        console.log(response.data);
+        if (response.data.status) {
+          setExpenses(response.data.expenses);
+          console.log(response.data.expenses);
+        }
+      })
+      .catch((err) => {
+        alert('Something went wrong');
+        console.log('Error: ' + err.message);
+      });
+
+    axios.get('https://fundtracking.herokuapp.com/charity/profile/donations', { headers: { 'Authorization': 'Bearer ' + access_token } })
+      .then((response) => {
+        console.log(response.data);
+        if (response.data.status) {
+          setDonations(response.data.donations);
+          console.log(response.data.donations);
+        }
+      })
+      .catch((err) => {
+        alert('Something went wrong');
+        console.log('Error: ' + err.message);
+      });
+  }, []);
+
   return (
     <>
       <Center>
         <HStack spacing={8} align={'start'}>
-          <VStack spacing={8} marginTop={90}>
+          <VStack spacing={8} marginTop={90} alignItems={'flex-start'}>
             <HStack spacing={2}>
               <Avatar
                 size={'2xl'}
-                src={donations[0].avatarUrl}
+                src={profileImg}
                 alt={'Avatar Alt'}
-                mb={4}
                 pos={'relative'}
               />
               <VStack align={'start'} padding={10}>
                 <Heading>
-                  Charity Name
+                  {charityName}
                 </Heading>
                 <Button colorScheme={'teal'} size={'md'}>
                   Edit Profile
                 </Button>
               </VStack>
             </HStack>
+            <Heading alignSelf={'start'} paddingTop={'5'}>
+              Latest Donations
+            </Heading>
             {
               donations.map((donation) =>
                 <DonationCard
-                  avatarUrl={donation.avatarUrl}
-                  name={donation.name}
+                  avatarUrl={donation.user_profile_image}
+                  name={donation.user_name}
                   date={donation.date}
-                  value={donation.value}
+                  value={donation.amount}
                 />,
               )
             }
           </VStack>
           <VStack spacing={8} px={12} py={24} marginTop={90}>
-            <HStack justifyContent={'end'} width={'40vw'}>
-              <Button colorScheme={'teal'} size={'lg'}>Add Expense</Button>
-              <Button colorScheme={'teal'} size={'lg'}>Add Report</Button>
+            <HStack spacing={8}>
+              <Heading alignSelf={'start'} paddingTop={'5'}>
+                Latest Expenses
+              </Heading>
+              <HStack justifyContent={'end'} width={'25vw'}>
+                <Button colorScheme={'teal'} size={'lg'}>Add Expense</Button>
+                <Button colorScheme={'teal'} size={'lg'}>Add Report</Button>
+              </HStack>
             </HStack>
-            <Heading alignSelf={'start'} paddingTop={'5'}>
-              Latest Expenses
-            </Heading>
             {
               expenses.map((expense) =>
                 <ReportCard
-                  title={expense.title}
+                  title={expense.reason}
                   date={expense.date}
-                  value={expense.value}
-                />
+                  value={expense.amount}
+                />,
               )
             }
           </VStack>

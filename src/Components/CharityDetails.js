@@ -118,35 +118,48 @@ function CharityDetails() {
               Description
             </Heading>
 
-            <Text align={'justify'}>
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit. Animi aperiam enim quo recusandae vero! Culpa
-              hic
-              impedit maxime quaerat voluptate. Debitis dolores fugiat harum laboriosam libero modi provident? Aliquam
-              amet at
-              autem corporis culpa cumque, dolore ea eius enim ex fugiat illo impedit in libero maiores minus nobis
-              officia
-              pariatur perferendis possimus qui quibusdam quisquam quos ratione rem repellat rerum sequi similique sint
-              soluta
-              tenetur totam vel voluptatem. Atque aut autem blanditiis consectetur cumque debitis delectus deleniti
-              dolore
-              doloribus et eveniet facere id ipsum maiores maxime molestias necessitatibus nisi, nostrum omnis quae qui
-              quidem
-              quisquam recusandae sit soluta sunt voluptas voluptatem! A ducimus eum eveniet id illum nisi saepe
-              veritatis,
-              voluptatum. Ab beatae culpa delectus dicta distinctio dolorem doloribus eaque earum eius enim est eveniet
-              ex
-              facere in, minima mollitia natus obcaecati odio odit officia optio perspiciatis quasi quidem sunt
-              voluptates? A
-              ad aliquam autem cupiditate debitis doloremque dolores, fugit ipsa labore optio perspiciatis reiciendis
-              sunt
-              voluptates? Aliquam eligendi eos error hic in non repudiandae saepe temporibus voluptatum. Ab animi autem
-              eos
-              nihil perspiciatis quae quibusdam repellendus rerum? Culpa, cum delectus dolorem doloribus eligendi facere
-              fugit
-              incidunt laborum odio perspiciatis placeat porro quas quasi quibusdam repudiandae unde, voluptates?
-              Accusamus,
-              distinctio?
-            </Text>
+            {(charity.description) ?
+              <Text align={'justify'}>
+                {charity.description}
+              </Text>
+              :
+              <Text align={'justify'}>
+                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Animi aperiam enim quo recusandae vero! Culpa
+                hic
+                impedit maxime quaerat voluptate. Debitis dolores fugiat harum laboriosam libero modi provident? Aliquam
+                amet at
+                autem corporis culpa cumque, dolore ea eius enim ex fugiat illo impedit in libero maiores minus nobis
+                officia
+                pariatur perferendis possimus qui quibusdam quisquam quos ratione rem repellat rerum sequi similique
+                sint
+                soluta
+                tenetur totam vel voluptatem. Atque aut autem blanditiis consectetur cumque debitis delectus deleniti
+                dolore
+                doloribus et eveniet facere id ipsum maiores maxime molestias necessitatibus nisi, nostrum omnis quae
+                qui
+                quidem
+                quisquam recusandae sit soluta sunt voluptas voluptatem! A ducimus eum eveniet id illum nisi saepe
+                veritatis,
+                voluptatum. Ab beatae culpa delectus dicta distinctio dolorem doloribus eaque earum eius enim est
+                eveniet
+                ex
+                facere in, minima mollitia natus obcaecati odio odit officia optio perspiciatis quasi quidem sunt
+                voluptates? A
+                ad aliquam autem cupiditate debitis doloremque dolores, fugit ipsa labore optio perspiciatis reiciendis
+                sunt
+                voluptates? Aliquam eligendi eos error hic in non repudiandae saepe temporibus voluptatum. Ab animi
+                autem
+                eos
+                nihil perspiciatis quae quibusdam repellendus rerum? Culpa, cum delectus dolorem doloribus eligendi
+                facere
+                fugit
+                incidunt laborum odio perspiciatis placeat porro quas quasi quibusdam repudiandae unde, voluptates?
+                Accusamus,
+                distinctio?
+              </Text>
+            }
+
+
           </VStack>
           <VStack spacing={8} px={12} marginTop={90}>
             <Heading alignSelf={'start'} paddingTop={'5'}>
