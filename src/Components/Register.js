@@ -16,10 +16,11 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import {
-  FaUserAlt, FaLock, FaBirthdayCake, FaWallet, FaEnvelopeOpen, FaEye, FaEyeSlash, FaPhone,
+  FaUserAlt, FaLock, FaBirthdayCake, FaWallet, FaEnvelopeOpen, FaEye, FaEyeSlash, FaPhone,FaFile
 } from 'react-icons/fa';
 import ConnectingToWallet from './ConnectingToWallet';
 import axios from 'axios';
+import { FilePicker } from 'react-file-picker';
 
 const CFaUserAlt = chakra(FaUserAlt);
 const CFaLock = chakra(FaLock);
@@ -36,18 +37,22 @@ const SignUp = (props) => {
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
   const [dob, setDob] = useState('');
+  const [imageFileName, setImageFileName] = useState('');
+  const [profileImg, setProfileImg] = useState();
 
   const submit = (e) => {
     e.preventDefault();
 
-    axios.post('https://fundtracking.herokuapp.com/doners/register', {
+    axios.post('https://fundtracking.herokuapp.com/user/register', {
       name: name,
       phone1: phone,
       email: email,
       password: password,
       dob: dob,
       username: userName,
+      account_type: 'doner',
       meta_wallet_address: walletAddress,
+      profile_image: profileImg,
     })
       .then(response => {
         console.log(response);
@@ -65,6 +70,18 @@ const SignUp = (props) => {
       window.alert(err.message);
     });
   };
+
+  function setProfileBase64String(file) {
+    let reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = function() {
+      setProfileImg(reader.result);
+    };
+    reader.onerror = function(error) {
+      //TODO make this shit better
+      console.log('Error: ', error);
+    };
+  }
 
   return (<Flex
     flexDirection='column'
@@ -191,6 +208,40 @@ const SignUp = (props) => {
                 </InputRightElement>
               </InputGroup>
             </FormControl>
+
+            {/* Logo Uploading Start*/}
+            <FormControl>
+              <InputGroup>
+                <InputLeftElement
+                  pointerEvents='none'
+                  color='gray.500'
+                  children={<FaFile color='gray.500' />}
+                />
+                <Input
+                  required='true'
+                  type='text'
+                  name='logo'
+                  _placeholder={{ color: 'gray.300' }}
+                  placeholder='Your Logo'
+                  value={imageFileName} onChange={e => setProfileImg(e.target.value)}
+                />
+                <InputRightElement width='4.5rem' me={'2'}>
+                  <FilePicker
+                    extensions={['png', 'jpg', 'jpeg', 'gif']}
+                    onChange={(file) => {
+                      setImageFileName(file.name);
+                      setProfileBase64String(file);
+                    }}
+                    onError={errMsg => console.log(errMsg)}
+                  >
+                    <Button h='1.75rem' size='sm'>
+                      Upload
+                    </Button>
+                  </FilePicker>
+                </InputRightElement>
+              </InputGroup>
+            </FormControl>
+            {/* Logo Uploading End*/}
             
             <FormControl>
               <InputGroup>

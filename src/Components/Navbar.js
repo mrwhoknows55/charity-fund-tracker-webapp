@@ -21,21 +21,25 @@ import axios from 'axios';
 export default function Navbar(props) {
   const { colorMode, toggleColorMode } = useColorMode();
   const { children } = props;
+  const [name, setName] = useState('');
   const [username, setUsername] = useState('Guest');
   const [loggedIn, setLoggedIn] = useState(false);
+  const [profileImg, setProfileImg] = useState('https://avatars.dicebear.com/api/male/username.svg');
 
   useEffect(() => {
     let access_token = getCookie('access_token');
     if (access_token) {
       axios
-        .get('https://fundtracking.herokuapp.com/doners/profile', {
+        .get('https://fundtracking.herokuapp.com/user/profile', {
           headers: { Authorization: 'Bearer ' + access_token },
         })
         .then(response => {
           if (response.data.status) {
-            setUsername(response.data.doner.username);
+            setUsername(response.data.user.username);
             setLoggedIn(true);
-            console.log(response.data.doner.username);
+            setProfileImg(response.data.user.profile_image);
+            setName(response.data.user.name);
+            console.log(response.data.user.username);
           }
         });
     }
@@ -45,7 +49,7 @@ export default function Navbar(props) {
     e.preventDefault();
     const access_token = getCookie('access_token');
     if (access_token != null) {
-      axios.post('https://fundtracking.herokuapp.com/doners/logout', undefined, { headers: { 'Authorization': 'Bearer ' + access_token } })
+      axios.post('https://fundtracking.herokuapp.com/user/logout', undefined, { headers: { 'Authorization': 'Bearer ' + access_token } })
         .then(response => {
           console.log(response);
           if (response.data.status) {
@@ -109,7 +113,7 @@ export default function Navbar(props) {
                 >
                   <Avatar
                     size={'sm'}
-                    src={'https://avatars.dicebear.com/api/male/username.svg'}
+                    src={profileImg}
                   />
                 </MenuButton>
                 <MenuList alignItems={'center'}>
@@ -117,19 +121,24 @@ export default function Navbar(props) {
                   <Center>
                     <Avatar
                       size={'2xl'}
-                      src={'https://avatars.dicebear.com/api/male/username.svg'}
+                      src={profileImg}
                     />
                   </Center>
                   <br />
+                  <Center>
+                    <p style={{'fontWeight':'600' , fontSize:'22px' }} >{name}</p>
+                  </Center>
                   <Center>
                     <p>{username}</p>
                   </Center>
                   <br />
                   <MenuDivider />
                   {
-                    (loggedIn) ?
+                   
+                   (loggedIn) ?
                       <MenuItem onClick={(e) => onLogout(e)}>
                         Logout
+                        
                       </MenuItem>
                       :
                       <MenuItem onClick={() => {
