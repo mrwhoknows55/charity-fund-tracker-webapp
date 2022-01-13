@@ -9,8 +9,10 @@ import Register from './Components/Register';
 import NgoRegister from './Components/NgoRegister';
 import UserHome from './Components/UserHome';
 import About from './Components/About';
-import NgoInformation from './Components/NgoInformation'
+import NgoInformation from './Components/NgoInformation';
 import CharityDetails from './Components/CharityDetails';
+import Admin from './Components/Admin';
+import NgoDetailForAdmin from './Components/NgoDetailForAdmin';
 
 class App extends PureComponent {
   render() {
@@ -22,10 +24,12 @@ class App extends PureComponent {
               <Route exact path='/' component={UserHome} />
               <Route exact path='/login' component={Login} />
               <Route exact path='/register' component={Register} />
+              <Route exact path='/about' component={About} />
+              <Route exact path='/charity/:username' component={CharityDetails} />
               <Route exact path='/ngoRegister' component={NgoRegister} />
-              <Route exact path='/about' component= {About} />
-              <Route exact path='/ngoInformation' component= {NgoInformation} />
-              <Route exact path='/charity/:id' component={CharityDetails} />
+              <Route exact path='/admin' component={Admin} />
+              <Route exact path='/ngoDetailForAdmin' component={NgoDetailForAdmin} />
+              <Route exact path='/ngoInformation' component={NgoInformation} />
             </Switch>
           </Navbar>
         </Box>

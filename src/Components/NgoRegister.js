@@ -1,31 +1,39 @@
 import { createRef, useEffect, useState } from 'react';
 import {
+  Avatar,
+  Box,
+  Button,
+  chakra,
   Flex,
+  FormControl,
   Heading,
   Input,
-  Button,
   InputGroup,
-  Stack,
   InputLeftElement,
-  chakra,
-  Box,
-  Link,
-  Avatar,
-  FormControl,
   InputRightElement,
+  Link,
+  Stack,
   VStack,
-  Image,
 } from '@chakra-ui/react';
 import {
-  FaUserAlt, FaLock, FaBirthdayCake, FaWallet, FaEnvelopeOpen, FaEye, FaEyeSlash, FaPhone, FaFile,FaImage,
+  FaBirthdayCake,
+  FaEnvelopeOpen,
+  FaEye,
+  FaEyeSlash,
+  FaFile,
+  FaLock,
+  FaPhone,
+  FaUserAlt,
+  FaWallet,
 } from 'react-icons/fa';
 import ConnectingToWallet from './ConnectingToWallet';
 import axios from 'axios';
+import { FilePicker } from 'react-file-picker';
 
 const CFaUserAlt = chakra(FaUserAlt);
 const CFaLock = chakra(FaLock);
 
-const SignUp = (props) => {
+const CharitySignup = (props) => {
   const handleShowClick = () => setShowPassword(!showPassword);
   const dateRef = createRef();
   const [showPassword, setShowPassword] = useState(false);
@@ -37,22 +45,25 @@ const SignUp = (props) => {
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
   const [certificate, setCertificate] = useState('');
+  const [certificateBase64, setCertificateBase64] = useState();
+  const [logoBase64, setLogoBase64] = useState();
   const [logo, setLogo] = useState('');
-//   const [dob, setDob] = useState('');
+  const [dob, setDob] = useState('');
 
   const submit = (e) => {
     e.preventDefault();
 
-    axios.post('https://fundtracking.herokuapp.com/doners/ngoRegister', {
+    axios.post('https://fundtracking.herokuapp.com/user/register', {
       name: name,
-      phone1: phone,
+      username: userName,
       email: email,
       password: password,
-    //   dob: dob,
-      username: userName,
-      logo:logo,
-      certificate: certificate,
+      phone1: phone,
       meta_wallet_address: walletAddress,
+      founded_in: dob,
+      profile_image: logoBase64,
+      account_type: 'charity',
+      tax_exc_cert: certificateBase64,
     })
       .then(response => {
         console.log(response);
@@ -60,7 +71,7 @@ const SignUp = (props) => {
           const token = response.data.access_token;
           console.log('token', token);
           document.cookie = 'access_token=' + token;
-          window.location.href = '/userHome';
+          // window.location.href = '/charity';
         } else {
           const err = response.data.message;
           throw Error('Error: ' + err);
@@ -70,6 +81,30 @@ const SignUp = (props) => {
       window.alert(err.message);
     });
   };
+
+  function setCertificateBase64String(file) {
+    let reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = function() {
+      setCertificateBase64(reader.result);
+    };
+    reader.onerror = function(error) {
+      //TODO make this shit better
+      console.log('Error: ', error);
+    };
+  }
+
+  function setLogoBase64String(file) {
+    let reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = function() {
+      setLogoBase64(reader.result);
+    };
+    reader.onerror = function(error) {
+      //TODO make this shit better
+      console.log('Error: ', error);
+    };
+  }
 
   return (<Flex
     flexDirection='column'
@@ -83,7 +118,7 @@ const SignUp = (props) => {
       justifyContent='center'
       alignItems='center'>
       <Box minW={{ base: '90%', md: '469px' }}>
-        <form 
+        <form
           onSubmit={(e) => {
             submit(e);
           }}
@@ -95,10 +130,10 @@ const SignUp = (props) => {
           >
             <VStack justifyContent={'center'} flexDirection={'column'} justifyItems={'center'}>
               <Avatar bg='teal.500' />
-              <Heading color='teal.400' >NGO SignUp</Heading>
+              <Heading color='teal.400'>NGO SignUp</Heading>
             </VStack>
 
-            <FormControl >
+            <FormControl>
               <InputGroup>
                 <InputLeftElement
                   pointerEvents='none'
@@ -108,7 +143,7 @@ const SignUp = (props) => {
                        onChange={e => setName(e.target.value)} type='text' placeholder='NGO Name' />
               </InputGroup>
             </FormControl>
-            
+
             <FormControl>
               <InputGroup>
                 <InputLeftElement
@@ -129,7 +164,7 @@ const SignUp = (props) => {
                   children={<FaEnvelopeOpen color='gray.500' />}
                 />
                 <Input
-                //   isRequired={true}
+                  //   isRequired={true}
                   _placeholder={{ color: 'gray.300' }}
                   type='email'
                   placeholder='Email Address'
@@ -138,12 +173,12 @@ const SignUp = (props) => {
                 />
               </InputGroup>
             </FormControl>
-            
+
             <FormControl>
               <InputGroup>
                 <InputLeftElement
                   pointerEvents='none'
-                  
+
                   color='gray.500'
                   children={<FaPhone color='gray.500' />}
                 />
@@ -158,8 +193,8 @@ const SignUp = (props) => {
                 />
               </InputGroup>
             </FormControl>
-            
-            {/* <FormControl>
+
+            <FormControl>
               <InputGroup>
                 <InputLeftElement
                   pointerEvents='none'
@@ -171,11 +206,13 @@ const SignUp = (props) => {
                   _placeholder={{ color: 'gray.300' }}
                   ref={dateRef} type='text' placeholder='mm/dd/yyyy' onFocus={() => dateRef.current.type = 'date'}
                   onBlur={() => dateRef.current.type = 'text'}
-                  value={dob} onChange={e => setDob(e.target.value)}
+                  value={dob} onChange={(e) => {
+                  console.log(e.target.value);
+                  setDob(e.target.value);
+                }}
                 />
               </InputGroup>
             </FormControl>
-             */}
 
             <FormControl>
               <InputGroup>
@@ -200,38 +237,8 @@ const SignUp = (props) => {
             </FormControl>
 
 
-{/* File Uploading Start*/}
-            
-<FormControl>
-              <InputGroup>
-                <InputLeftElement
-                  pointerEvents='none'
-                  color='gray.500'
-                  children={<FaFile color='gray.500' />}
-                />
-                <Input
+            {/* File Uploading Start*/}
 
-                  _placeholder={{ color: 'gray.300' }}
-                  placeholder='Upload 80G Certi'
-                />
-                <InputRightElement width='16rem'>
-                 
-                 <Input
-                    required='true'
-                   _placeholder={{ color: 'gray.300' }}
-                   type="file"
-                   placeholder='Upload 80G Certificate'
-                   name='certificate'
-                   value={certificate} onChange={e => setCertificate(e.target.value)}
-                 />
-                 </InputRightElement>
-               
-              </InputGroup>
-            </FormControl>
-{/* File Uploading End*/}
-
-
-{/* Logo Uploading Start*/}
             <FormControl>
               <InputGroup>
                 <InputLeftElement
@@ -240,27 +247,64 @@ const SignUp = (props) => {
                   children={<FaFile color='gray.500' />}
                 />
                 <Input
-
+                  required='true'
                   _placeholder={{ color: 'gray.300' }}
-                  placeholder='Upload Logo'
+                  type='text'
+                  placeholder='80G Certificate Document'
+                  name='certificate'
+                  value={certificate} onChange={e => setCertificate(e.target.value)}
                 />
-                <InputRightElement width='18rem'>
-                 
-                 <Input
-                    required='true'
-                   _placeholder={{ color: 'gray.300' }}
-                   type="file"
-                   placeholder='Upload Logo'
-                   name='logo'
-                   value={logo} onChange={e => setLogo(e.target.value)}
-                 />
-                 </InputRightElement>
-               
+                <InputRightElement width='4.5rem' me={'2'}>
+                  <FilePicker
+                    extensions={['pdf', 'docx']}
+                    onChange={(file) => {
+                      setCertificate(file.name);
+                      setCertificateBase64String(file);
+                    }}
+                    onError={errMsg => console.log(errMsg)}
+                  >
+                    <Button h='1.75rem' size='sm'>
+                      Upload
+                    </Button>
+                  </FilePicker>
+                </InputRightElement>
               </InputGroup>
             </FormControl>
-{/* Logo Uploading End*/}
+            {/* File Uploading End*/}
 
-            
+            {/* Logo Uploading Start*/}
+            <FormControl>
+              <InputGroup>
+                <InputLeftElement
+                  pointerEvents='none'
+                  color='gray.500'
+                  children={<FaFile color='gray.500' />}
+                />
+                <Input
+                  required='true'
+                  type='text'
+                  name='logo'
+                  _placeholder={{ color: 'gray.300' }}
+                  placeholder='Your Logo'
+                  value={logo} onChange={e => setLogo(e.target.value)}
+                />
+                <InputRightElement width='4.5rem' me={'2'}>
+                  <FilePicker
+                    extensions={['png', 'jpg', 'jpeg', 'gif']}
+                    onChange={(file) => {
+                      setLogo(file.name);
+                      setLogoBase64String(file);
+                    }}
+                    onError={errMsg => console.log(errMsg)}
+                  >
+                    <Button h='1.75rem' size='sm'>
+                      Upload
+                    </Button>
+                  </FilePicker>
+                </InputRightElement>
+              </InputGroup>
+            </FormControl>
+            {/* Logo Uploading End*/}
             <FormControl>
               <InputGroup>
                 <InputLeftElement
@@ -272,7 +316,7 @@ const SignUp = (props) => {
                        placeholder='Wallet Address' required disabled />
               </InputGroup>
             </FormControl>
-            
+
             <Button
               borderRadius={20}
               type='submit'
@@ -348,7 +392,7 @@ const NgoRegister = () => {
       <VStack justifyContent={'center'}>
 
         {walletAddress && walletAddress !== '' ? <>
-          <SignUp walletAddress={walletAddress} />
+          <CharitySignup walletAddress={walletAddress} />
         </> : <>
           {!isDisconnected ? <>
             <ConnectingToWallet />
