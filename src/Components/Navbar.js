@@ -112,7 +112,7 @@ export default function Navbar(props) {
                 {colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
               </Button>
               <a href={homeURI}>
-                <Button>Home</Button>
+                <Button>Home`</Button>
               </a>
               {
                 (accountType === 'admin') ?
