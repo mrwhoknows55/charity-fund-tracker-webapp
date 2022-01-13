@@ -80,7 +80,7 @@ const Login = () => {
                 <InputGroup>
                   <InputLeftElement
                     pointerEvents="none"
-                    children={<CFaUserAlt color="gray.300" />}
+                    children={<CFaUserAlt color="gray.500" />}
                   />
                   <Input
                     type="email"
@@ -96,7 +96,7 @@ const Login = () => {
                   <InputLeftElement
                     pointerEvents="none"
                     color="gray.300"
-                    children={<CFaLock color="gray.300" />}
+                    children={<CFaLock color="gray.500" />}
                   />
                   <Input
                     type={showPassword ? 'text' : 'password'}
@@ -106,14 +106,14 @@ const Login = () => {
                     required
                   />
                   <InputRightElement width="4.5rem">
-                    <Button h="1.75rem" size="sm" onClick={handleShowClick}>
+                    <Button h="1.75rem" size="sm" onClick={handleShowClick} >
                       {showPassword ? 'Hide' : 'Show'}
                     </Button>
                   </InputRightElement>
                 </InputGroup>
               </FormControl>
               <Button
-                borderRadius={0}
+                borderRadius={20}
                 type="submit"
                 variant="solid"
                 colorScheme="teal"
@@ -133,6 +133,6 @@ const Login = () => {
       </Box>
     </Flex>
   );
-};
+}
 
 export default Login;

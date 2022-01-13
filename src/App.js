@@ -6,8 +6,10 @@ import {
 import Navbar from './Components/Navbar';
 import Login from './Components/Login';
 import Register from './Components/Register';
+import NgoRegister from './Components/NgoRegister';
 import UserHome from './Components/UserHome';
 import About from './Components/About';
+import NgoInformation from './Components/NgoInformation'
 import CharityDetails from './Components/CharityDetails';
 import CharityHome from './Components/CharityHome';
 
@@ -24,6 +26,8 @@ class App extends PureComponent {
               <Route exact path='/about' component={About} />
               <Route exact path='/charity/:id/details' component={CharityDetails} />
               <Route exact path='/charity' component={CharityHome} />
+              <Route exact path='/ngoRegister' component={NgoRegister} />
+              <Route exact path='/ngoInformation' component= {NgoInformation} />
             </Switch>
           </Navbar>
         </Box>
