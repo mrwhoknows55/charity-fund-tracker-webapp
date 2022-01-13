@@ -9,7 +9,6 @@ import Register from './Components/Register';
 import NgoRegister from './Components/NgoRegister';
 import UserHome from './Components/UserHome';
 import About from './Components/About';
-import NgoInformation from './Components/NgoInformation';
 import CharityDetails from './Components/CharityDetails';
 import CharityHome from './Components/CharityHome';
 import Admin from './Components/Admin';
@@ -31,7 +30,6 @@ class App extends PureComponent {
               <Route exact path='/ngoRegister' component={NgoRegister} />
               <Route exact path='/admin' component={Admin} />
               <Route exact path='/ngoDetailForAdmin' component={NgoDetailForAdmin} />
-              <Route exact path='/ngoInformation' component={NgoInformation} />
             </Switch>
           </Navbar>
         </Box>

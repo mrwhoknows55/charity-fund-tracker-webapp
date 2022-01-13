@@ -59,7 +59,7 @@ const SignUp = (props) => {
         if (response.data.status && response.data.access_token) {
           const token = response.data.access_token;
           console.log('token', token);
-          document.cookie = 'access_token=' + token;
+          window.sessionStorage.setItem('access_token', token);
           window.location.href = '/';
         } else {
           const err = response.data.message;

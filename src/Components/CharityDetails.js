@@ -1,6 +1,7 @@
 import {
   Button,
-  Editable, EditableInput,
+  Editable,
+  EditableInput,
   EditablePreview,
   Flex,
   Heading,
@@ -74,7 +75,8 @@ function CharityDetails() {
                   {charity.name}
                 </Heading>
                 <Text>
-                  <b>Founded on:</b> {(charity.charityDetails && charity.charityDetails.founded_in) ? charity.charityDetails.founded_in : ''}
+                  <b>Founded
+                    on:</b> {(charity.charityDetails && charity.charityDetails.founded_in) ? charity.charityDetails.founded_in : ''}
                 </Text>
                 <Text>
                   Total
@@ -92,7 +94,7 @@ function CharityDetails() {
               <Editable defaultValue='1.0' colorScheme={'teal'}>
                 $&nbsp;
                 <EditablePreview />
-                <EditableInput/>
+                <EditableInput />
               </Editable>
               <Button colorScheme={'teal'} size={'lg'}>
                 Donate Funds

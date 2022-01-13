@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
-import {
-  VStack,
-} from '@chakra-ui/react';
+import { VStack } from '@chakra-ui/react';
 
 class Home extends Component {
   render() {

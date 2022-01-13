@@ -1,28 +1,24 @@
-import React, { useEffect, useState, Component } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
-  VStack,
-  Center,
-  SimpleGrid,
-  Box,
-  Flex,
-  Square,
-  Text,
-  Heading,
-  useColorModeValue,
-  Button,
-  Stack,
-  HStack,
   Avatar,
+  Button,
+  Center,
+  Flex,
+  Heading,
+  HStack,
+  SimpleGrid,
+  Stack,
+  Text,
+  useColorModeValue,
+  VStack,
 } from '@chakra-ui/react';
 import axios from 'axios';
 import { useHistory } from 'react-router-dom';
-import { getCookie } from '../utils/getCookie';
 
-export default function Admin () {
-  const history = useHistory();
+export default function Admin() {
+  useHistory();
   const [charities, setCharities] = useState([]);
-  const [recentTrans, setResetTrans] = useState([]);
-  // const [profileImg, setProfileImg] = useState(
+// const [profileImg, setProfileImg] = useState(
   //   'https://avatars.dicebear.com/api/male/username.svg'
   // );
 
@@ -52,8 +48,7 @@ export default function Admin () {
   ];
 
   useEffect(() => {
-    const access_token = getCookie('access_token');
-
+    const access_token = window.sessionStorage.getItem('access_token');
     axios
       .get('https://fundtracking.herokuapp.com/admin/charities', {
         headers: { Authorization: 'Bearer ' + access_token },
@@ -62,7 +57,6 @@ export default function Admin () {
         console.log(response);
         if (response.data.status) {
           setCharities(response.data.charities);
-          // setProfileImg(response.data.user.profile_image);
           console.log(response.data.charities);
         }
       })
@@ -72,13 +66,13 @@ export default function Admin () {
       });
   }, []);
 
-  function acceptCharity (e, username, isAccepted) {
-    const access_token = getCookie('access_token');
+  function acceptCharity(e, username, isAccepted) {
+    const access_token = window.sessionStorage.getItem('access_token');
     axios
       .post(
         'https://fundtracking.herokuapp.com/admin/charity/verify',
         { username: username, accepted: isAccepted },
-        { headers: { Authorization: 'Bearer ' + access_token } }
+        { headers: { Authorization: 'Bearer ' + access_token } },
       )
       .then(response => {
         console.log(response);
@@ -95,24 +89,22 @@ export default function Admin () {
   return (
     <>
       <VStack spacing={8}>
-        <h1>NGO Requests</h1>
         <Center py={5} marginTop={100}>
           <Flex color='white' spacing='20px'>
             {/* --------------------- NGO REQUEST BOX START----------------------------- */}
-            <Box
+            <VStack
+              spacing={8}
               w={{ sm: '100%', md: '68rem' }}
               bg={useColorModeValue('gray.200', 'gray.700')}
               padding='15px'
-              margin='10px'
               borderRadius={10}
             >
               <Heading
                 textColor={useColorModeValue('gray.900', 'gray.100')}
-                marginBottom='15px'
-                // font-Weight='xl'
                 zIndex={4}
+                marginTop={'2vh'}
               >
-                NGO Requests
+                Charity Requests
               </Heading>
 
               <SimpleGrid columns={1} spacingX='40px' spacingY='20px'>
@@ -131,28 +123,29 @@ export default function Admin () {
                     >
                       <Center>
                         <Avatar
-                          size={'xl'}
+                          size={'2xl'}
+                          padding={'1vh'}
+                          background={'#ffffff00'}
                           src={
                             charity.profile_image
                               ? charity.profile_image
                               : 'https://avatars.dicebear.com/api/male/username.svg'
                           }
                           alt={'Avatar Alt'}
-                          mb={4}
                           pos={'relative'}
                         />
                       </Center>
 
-                      <HStack width={'50vw'} justifyContent={'space-between'}  >
-                        <VStack spacing={2} padding={10}  >
-                          <Text as='b' fontSize='2xl' textColor={'black'}  >
+                      <HStack width={'50vw'} justifyContent={'space-between'}>
+                        <VStack spacing={2} padding={10} alignItems={'flex-start'}>
+                          <Text as='b' fontSize='2xl' textColor={'black'}>
                             {charity.name}
                           </Text>
-                          <Text as='i' fontSize='md' textColor={'black'} position={'relative'} left={-10} >
+                          <Text as='i' fontSize='md' textColor={'black'}>
                             Date: {charity.requested_time}
                           </Text>
                           <a href={`/charity/${charity.username}`}>
-                            <Button colorScheme='teal' variant='outline' position={'relative'} left={-10} >
+                            <Button colorScheme='teal' variant='outline'>
                               Details
                             </Button>
                           </a>
@@ -169,7 +162,7 @@ export default function Admin () {
                             Accept
                           </Button>
                           <Button
-                            colorScheme='red'
+                            colorScheme={'red'}
                             variant='solid'
                             fontSize={'22px'}
                             onClick={e =>
@@ -184,21 +177,21 @@ export default function Admin () {
                   </React.Fragment>
                 ))}
               </SimpleGrid>
-            </Box>
+            </VStack>
 
             {/* --------------------- NGO REQUEST BOX END----------------------------- */}
 
             {/* ---------------------   RECENT TRANSACTION BOX START ----------------------------- */}
 
-            <Box
-              bg={useColorModeValue('gray.300', 'gray.900')}
+            <VStack
+              borderRadius={'10'}
+              bg={useColorModeValue('gray.200', 'gray.700')}
               w='700px'
               size='150px'
-              padding='15px'
-              margin='10px'
               marginLeft='30px'
+              spacing={8}
             >
-              <Heading marginBottom='15px'>Recent Transactions </Heading>
+              <Heading marginTop={'4vh'} textColor={useColorModeValue('gray.900', 'gray.100')}>Recent Transactions </Heading>
 
               <SimpleGrid columns={1} spacingX='40px' spacingY='20px'>
                 {dailyTransactions.map(charity => (
@@ -216,19 +209,20 @@ export default function Admin () {
                     >
                       <Center>
                         <Avatar
-                          size={'xl'}
+                          size={'2xl'}
+                          padding={'1vh'}
+                          background={'#ffffff00'}
                           src={
                             charity.profile_image
                               ? charity.profile_image
                               : 'https://avatars.dicebear.com/api/male/username.svg'
                           }
                           alt={'Avatar Alt'}
-                          mb={4}
                           pos={'relative'}
                         />
                       </Center>
-                      <HStack width={'30vw'} justifyContent={'space-between'}  >
-                        <VStack spacing={2} padding={10}>
+                      <HStack width={'45vw'} justifyContent={'space-between'}>
+                        <VStack alignItems={'flex-start'}>
                           <Text as='b' fontSize='2xl' textColor={'black'}>
                             {charity.name}
                           </Text>
@@ -238,20 +232,18 @@ export default function Admin () {
                           <Text as='i' fontSize='md' textColor={'black'}>
                             Date: {charity.date}
                           </Text>
-                          
                         </VStack>
-                        <Stack spacing={3} padding={5}>
-                          
-                        <Text as='b' padding={5} fontSize='3xl'  align='left'>
-                          ₹{charity.value }
-                        </Text>
+                        <Stack width={'10vw'} spacing={1} padding={2}>
+                          <Text textColor={'teal'} as='b' padding={5} fontSize='3xl' align='left'>
+                            ₹{charity.value}
+                          </Text>
                         </Stack>
                       </HStack>
                     </Stack>
                   </React.Fragment>
                 ))}
               </SimpleGrid>
-            </Box>
+            </VStack>
 
             {/* ---------------------   RECENT TRANSACTION BOX END ----------------------------- */}
           </Flex>
