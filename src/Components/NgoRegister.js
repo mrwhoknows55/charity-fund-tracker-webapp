@@ -70,8 +70,8 @@ const CharitySignup = (props) => {
         if (response.data.status && response.data.access_token) {
           const token = response.data.access_token;
           console.log('token', token);
-          document.cookie = 'access_token=' + token;
-          // window.location.href = '/charity';
+          window.sessionStorage.setItem('access_token', token);
+          window.location.href = '/charity';
         } else {
           const err = response.data.message;
           throw Error('Error: ' + err);

@@ -1,21 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import {
-  Box,
-  Flex,
   Avatar,
+  Box,
   Button,
+  Center,
+  Flex,
   Menu,
   MenuButton,
-  MenuList,
-  MenuItem,
   MenuDivider,
-  useColorModeValue,
+  MenuItem,
+  MenuList,
   Stack,
   useColorMode,
-  Center,
+  useColorModeValue,
 } from '@chakra-ui/react';
 import { MoonIcon, SunIcon } from '@chakra-ui/icons';
-import { getCookie } from '../utils/getCookie';
 import axios from 'axios';
 
 export default function Navbar(props) {
@@ -27,7 +26,7 @@ export default function Navbar(props) {
   const [profileImg, setProfileImg] = useState('https://avatars.dicebear.com/api/male/username.svg');
 
   useEffect(() => {
-    let access_token = getCookie('access_token');
+    const access_token = window.sessionStorage.getItem('access_token');
     if (access_token) {
       axios
         .get('https://fundtracking.herokuapp.com/user/profile', {
@@ -42,24 +41,32 @@ export default function Navbar(props) {
             console.log(response.data.user.username);
           }
         });
+    } else {
+      console.log('Navbar: user is not logged in yet');
     }
-  });
+  }, []);
+  
+  const onEditProfile = (e) => {
+    e.preventDefault();
+    //TODO
+    window.alert('Edit Profile Clicked');
+  };
 
   const onLogout = (e) => {
     e.preventDefault();
-    const access_token = getCookie('access_token');
+    const access_token = window.sessionStorage.getItem('access_token');
     if (access_token != null) {
       axios.post('https://fundtracking.herokuapp.com/user/logout', undefined, { headers: { 'Authorization': 'Bearer ' + access_token } })
         .then(response => {
           console.log(response);
           if (response.data.status) {
             console.log('successfully logged out!');
-            document.cookie = 'access_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+            window.sessionStorage.setItem('access_token', 'access_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;');
           } else {
             console.log('something went wrong!');
           }
         }).catch(e => {
-        document.cookie = 'access_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+        window.sessionStorage.setItem('access_token', 'access_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;');
         console.log(e);
       }).finally(() => {
         window.location.href = '/login';
@@ -77,7 +84,7 @@ export default function Navbar(props) {
         width={'100vw'}
         height={'auto'}
         bg={useColorModeValue('gray.100', 'gray.900')}
-        px={"6vw"}
+        px={'6vw'}
         zIndex={4}
       >
         <Flex h={16} alignItems={'center'} justifyContent={'space-between'}>
@@ -93,9 +100,6 @@ export default function Navbar(props) {
 
               <a href={'/'}>
                 <Button>Home</Button>
-              </a>
-              <a href={'/ngoInformation'}>
-                <Button>NGO</Button>
               </a>
               <a href={'/about'}>
                 <Button>About</Button>
@@ -126,7 +130,7 @@ export default function Navbar(props) {
                   </Center>
                   <br />
                   <Center>
-                    <p style={{'fontWeight':'600' , fontSize:'22px' }} >{name}</p>
+                    <p style={{ 'fontWeight': '600', fontSize: '22px' }}>{name}</p>
                   </Center>
                   <Center>
                     <p>{username}</p>
@@ -134,12 +138,14 @@ export default function Navbar(props) {
                   <br />
                   <MenuDivider />
                   {
-                   
-                   (loggedIn) ?
-                      <MenuItem onClick={(e) => onLogout(e)}>
-                        Logout
-                        
-                      </MenuItem>
+                    (loggedIn) ? <>
+                        <MenuItem onClick={(e) => onLogout(e)}>
+                          Logout
+                        </MenuItem>
+                        <MenuItem onClick={(e) => onEditProfile(e)}>
+                          Edit Profile
+                        </MenuItem>
+                      </>
                       :
                       <MenuItem onClick={() => {
                         window.location.href = '/login';

@@ -1,28 +1,25 @@
-import React, { useEffect, useState, Component } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
-  VStack,
-  Center,
-  SimpleGrid,
   Box,
-  Flex,
-  Square,
-  Text,
-  Heading,
-  useColorModeValue,
   Button,
+  Center,
+  Flex,
+  Heading,
+  SimpleGrid,
   Stack,
+  Text,
+  useColorModeValue,
+  VStack,
 } from '@chakra-ui/react';
 import axios from 'axios';
 import { useHistory } from 'react-router-dom';
-import { getCookie } from '../utils/getCookie';
 
-export default function Admin () {
+export default function Admin() {
   const history = useHistory();
   const [charities, setCharities] = useState([]);
 
   useEffect(() => {
-    const access_token = getCookie('access_token');
-
+    const access_token = window.sessionStorage.getItem("access_token");
     axios
       .get('https://fundtracking.herokuapp.com/admin/charities', {
         headers: { Authorization: 'Bearer ' + access_token },
@@ -40,13 +37,13 @@ export default function Admin () {
       });
   }, []);
 
-  function acceptCharity (e, username, isAccepted) {
-    const access_token = getCookie('access_token');
+  function acceptCharity(e, username, isAccepted) {
+    const access_token = window.sessionStorage.getItem("access_token");
     axios
       .post(
         'https://fundtracking.herokuapp.com/admin/charity/verify',
         { username: username, accepted: isAccepted },
-        { headers: { Authorization: 'Bearer ' + access_token } }
+        { headers: { Authorization: 'Bearer ' + access_token } },
       )
       .then(response => {
         console.log(response);
@@ -107,7 +104,7 @@ export default function Admin () {
                           </Text>
 
                           {/* TODO : Align */}
-                          <a href={`/charity/${charity.username}`} >
+                          <a href={`/charity/${charity.username}`}>
                             <Button colorScheme='teal' variant='outline'>
                               Details
                             </Button>

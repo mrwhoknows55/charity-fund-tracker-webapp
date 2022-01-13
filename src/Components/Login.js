@@ -1,20 +1,20 @@
 import { useState } from 'react';
 import {
+  Avatar,
+  Box,
+  Button,
+  chakra,
   Flex,
+  FormControl,
   Heading,
   Input,
-  Button,
   InputGroup,
-  Stack,
   InputLeftElement,
-  chakra,
-  Box,
-  Link,
-  Avatar,
-  FormControl,
   InputRightElement,
+  Link,
+  Stack,
 } from '@chakra-ui/react';
-import { FaUserAlt, FaLock } from 'react-icons/fa';
+import { FaLock, FaUserAlt } from 'react-icons/fa';
 import axios from 'axios';
 import { useHistory } from 'react-router-dom';
 
@@ -42,10 +42,21 @@ const Login = () => {
         console.log(response);
         if (response.data && response.data.access_token) {
           const token = response.data.access_token;
+          const accountType = response.data.account_type ? response.data.account_type : '';
           console.log('token', token);
-          document.cookie = 'access_token=' + token;
-          if (response.data.account_type == 'admin') history.replace('/admin');
-          else history.replace('/');
+          window.sessionStorage.setItem('access_token', token);
+          window.sessionStorage.setItem('account_type', accountType);
+
+          if (accountType === 'admin') {
+            console.log('Admin Login');
+            history.replace('/admin');
+          } else if (accountType === 'charity') {
+            console.log('Charity Login');
+            history.replace('/charity');
+          } else {
+            console.log('Regular Login');
+            history.replace('/');
+          }
         } else {
           const err = response.data.message;
           throw Error('Error: ' + err);
