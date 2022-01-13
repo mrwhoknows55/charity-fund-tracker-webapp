@@ -5,6 +5,7 @@ import {
   Button,
   Center,
   Flex,
+  Heading,
   Menu,
   MenuButton,
   MenuDivider,
@@ -21,12 +22,15 @@ export default function Navbar(props) {
   const { colorMode, toggleColorMode } = useColorMode();
   const { children } = props;
   const [name, setName] = useState('');
+  const [homeURI, setHomeURI] = useState('/');
+  const [accountType, setAccountType] = useState('');
   const [username, setUsername] = useState('Guest');
   const [loggedIn, setLoggedIn] = useState(false);
   const [profileImg, setProfileImg] = useState('https://avatars.dicebear.com/api/male/username.svg');
 
   useEffect(() => {
     const access_token = window.sessionStorage.getItem('access_token');
+    setAccountType(window.sessionStorage.getItem('account_type'));
     if (access_token) {
       axios
         .get('https://fundtracking.herokuapp.com/user/profile', {
@@ -39,13 +43,23 @@ export default function Navbar(props) {
             setProfileImg(response.data.user.profile_image);
             setName(response.data.user.name);
             console.log(response.data.user.username);
+            if (accountType && (accountType === '' || accountType === 'doner')) {
+              console.log('homeURI: /');
+              setHomeURI('/');
+            } else {
+              console.log('homeURI: ' + accountType);
+              setHomeURI(`/${accountType}`);
+            }
           }
+        })
+        .catch((err) => {
+          console.error(err);
         });
     } else {
       console.log('Navbar: user is not logged in yet');
     }
   }, []);
-  
+
   const onEditProfile = (e) => {
     e.preventDefault();
     //TODO
@@ -62,10 +76,12 @@ export default function Navbar(props) {
           if (response.data.status) {
             console.log('successfully logged out!');
             window.sessionStorage.setItem('access_token', 'access_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;');
+            window.sessionStorage.setItem('account_type', '');
           } else {
             console.log('something went wrong!');
           }
         }).catch(e => {
+        window.sessionStorage.setItem('account_type', '');
         window.sessionStorage.setItem('access_token', 'access_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;');
         console.log(e);
       }).finally(() => {
@@ -88,25 +104,31 @@ export default function Navbar(props) {
         zIndex={4}
       >
         <Flex h={16} alignItems={'center'} justifyContent={'space-between'}>
-          <Box>FundTracking</Box>
+          <Heading fontSize={'2xl'}>Fund Tracking</Heading>
 
           <Flex alignItems={'center'}>
             <Stack direction={'row'} spacing={7}>
               <Button onClick={toggleColorMode}>
                 {colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
               </Button>
-
-              {/* Dummy Button for UserHome Start*/}
-
-              <a href={'/'}>
+              <a href={homeURI}>
                 <Button>Home</Button>
               </a>
+              {
+                (accountType === 'admin') ?
+                  <>
+                    {/*TODO Create these pages*/}
+                    <a href={'/admin/charities'}>
+                      <Button>Charities</Button>
+                    </a>
+                    <a href={'/admin/donors'}>
+                      <Button>Donors</Button>
+                    </a>
+                  </> : <></>
+              }
               <a href={'/about'}>
                 <Button>About</Button>
               </a>
-
-              {/* Dummy Button for UserHome Ends */}
-
               <Menu>
                 <MenuButton
                   as={Button}
