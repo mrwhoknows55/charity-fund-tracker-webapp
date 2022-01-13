@@ -9,6 +9,7 @@ import Register from './Components/Register';
 import UserHome from './Components/UserHome';
 import About from './Components/About';
 import CharityDetails from './Components/CharityDetails';
+import CharityHome from './Components/CharityHome';
 
 class App extends PureComponent {
   render() {
@@ -21,7 +22,8 @@ class App extends PureComponent {
               <Route exact path='/login' component={Login} />
               <Route exact path='/register' component={Register} />
               <Route exact path='/about' component={About} />
-              <Route exact path='/charity/:id' component={CharityDetails} />
+              <Route exact path='/charity/:id/details' component={CharityDetails} />
+              <Route exact path='/charity' component={CharityHome} />
             </Switch>
           </Navbar>
         </Box>
