@@ -26,7 +26,7 @@ export default function Admin() {
     {
       name: 'Manohar Shatri',
       date: '15-01-2022',
-      value: '7,80,000',
+      value: '78,000',
       to: 'Being Human',
       profile_image:
         'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQNOhpV67XSI4Vz5Z_L7XoWiH7UzZQDBTzS3g&usqp=CAU',
@@ -40,7 +40,7 @@ export default function Admin() {
     {
       name: 'Rajiv Patil',
       date: '15-01-2022',
-      value: '3,00,000',
+      value: '69420',
       to: 'Palak Charitable Trust',
       profile_image:
         'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQNOhpV67XSI4Vz5Z_L7XoWiH7UzZQDBTzS3g&usqp=CAU',
