@@ -83,8 +83,9 @@ export default function ProductSimple() {
                     <Heading as='h1' fontSize={'3xl'} fontFamily={['body', 'Lucida Bright']} fontWeight={700}>
                       {charity.name}
                     </Heading>
-                    <p align='justify'>This NGO is working since 2000. In this 20 years we taking many activities for
-                      needy people and also we donated money to desaster management commities</p>
+                    <Text
+                      align='justify'>{charity.description ? charity.description.substring(0, 340) + '...' : 'This NGO is working since 2000. In this 20 years we taking many activities for\n' +
+                      '                      needy people and also we donated money to desaster management commities...'}</Text>
                     <br />
                     <Flex direction={'column'}>
                       <Stack direction={'row'} align='flex-start'>
