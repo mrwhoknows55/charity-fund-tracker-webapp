@@ -55,9 +55,9 @@ function CharityDetails() {
   function viewCertDoc(e) {
     e.preventDefault();
     if (charity.charityDetails && charity.charityDetails.tax_exc_cert) {
-      const fileURI = charity.charityDetails.tax_exc_cert.replace('data:application/pdf;base64,', '');
-      let pdfWindow = window.open('');
-      pdfWindow.document.write('<iframe width=\'100%\' height=\'100%\' src=\'data:application/pdf;base64, ' + encodeURI(fileURI) + '\'></iframe>');
+      // const fileURI = charity.charityDetails.tax_exc_cert.replace('data:application/pdf;base64,', '');
+       window.open(charity.charityDetails.tax_exc_cert,"_blank");
+      // pdfWindow.document.write('<iframe width=\'100%\' height=\'100%\' src=\'data:application/pdf;base64, ' + encodeURI(fileURI) + '\'></iframe>');
     } else {
       window.alert('Tax Exemption Certificate Not Available');
     }
