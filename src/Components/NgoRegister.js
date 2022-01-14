@@ -17,6 +17,7 @@ import {
 } from '@chakra-ui/react';
 import {
   FaBirthdayCake,
+  FaEdit,
   FaEnvelopeOpen,
   FaEye,
   FaEyeSlash,
@@ -29,6 +30,7 @@ import {
 import ConnectingToWallet from './ConnectingToWallet';
 import axios from 'axios';
 import { FilePicker } from 'react-file-picker';
+import { SampleDesc } from '../SampleText';
 
 const CFaUserAlt = chakra(FaUserAlt);
 const CFaLock = chakra(FaLock);
@@ -49,22 +51,25 @@ const CharitySignup = (props) => {
   const [logoBase64, setLogoBase64] = useState();
   const [logo, setLogo] = useState('');
   const [dob, setDob] = useState('');
+  const [desc, setDesc] = useState('');
 
   const submit = (e) => {
     e.preventDefault();
 
-    axios.post('https://fundtracking.herokuapp.com/user/register', {
-      name: name,
-      username: userName,
-      email: email,
-      password: password,
-      phone1: phone,
-      meta_wallet_address: walletAddress,
-      founded_in: dob,
-      profile_image: logoBase64,
-      account_type: 'charity',
-      tax_exc_cert: certificateBase64,
-    })
+    const formData = new FormData();
+    formData.append('name', name);
+    formData.append('phone1', phone);
+    formData.append('email', email);
+    formData.append('dob', dob);
+    formData.append('username', userName);
+    formData.append('password', password);
+    formData.append('account_type', 'charity');
+    formData.append('meta_wallet_address', walletAddress);
+    formData.append('profile_photo', logo);
+    formData.append('tax_cert', certificate);
+    formData.append('description', desc ? desc : SampleDesc);
+
+    axios.post('https://fundtracking.herokuapp.com/user/register', formData)
       .then(response => {
         console.log(response);
         if (response.data.status && response.data.access_token) {
@@ -130,7 +135,7 @@ const CharitySignup = (props) => {
           >
             <VStack justifyContent={'center'} flexDirection={'column'} justifyItems={'center'}>
               <Avatar bg='teal.500' />
-              <Heading color='teal.400'>NGO SignUp</Heading>
+              <Heading color='teal.400'>Charity Sign Up</Heading>
             </VStack>
 
             <FormControl>
@@ -140,7 +145,7 @@ const CharitySignup = (props) => {
                   children={<CFaUserAlt color='gray.500' />}
                 />
                 <Input isRequired={true} _placeholder={{ color: 'gray.300' }} value={name}
-                       onChange={e => setName(e.target.value)} type='text' placeholder='NGO Name' />
+                       onChange={e => setName(e.target.value)} type='text' placeholder='Charity Name' />
               </InputGroup>
             </FormControl>
 
@@ -252,14 +257,13 @@ const CharitySignup = (props) => {
                   type='text'
                   placeholder='80G Certificate Document'
                   name='certificate'
-                  value={certificate} onChange={e => setCertificate(e.target.value)}
+                  value={certificate.name} onChange={e => setCertificate(e.target.value)}
                 />
                 <InputRightElement width='4.5rem' me={'2'}>
                   <FilePicker
                     extensions={['pdf', 'docx']}
                     onChange={(file) => {
-                      setCertificate(file.name);
-                      setCertificateBase64String(file);
+                      setCertificate(file);
                     }}
                     onError={errMsg => console.log(errMsg)}
                   >
@@ -286,14 +290,13 @@ const CharitySignup = (props) => {
                   name='logo'
                   _placeholder={{ color: 'gray.300' }}
                   placeholder='Your Logo'
-                  value={logo} onChange={e => setLogo(e.target.value)}
+                  value={logo.name} onChange={e => setLogo(e.target.value)}
                 />
                 <InputRightElement width='4.5rem' me={'2'}>
                   <FilePicker
                     extensions={['png', 'jpg', 'jpeg', 'gif']}
                     onChange={(file) => {
-                      setLogo(file.name);
-                      setLogoBase64String(file);
+                      setLogo(file);
                     }}
                     onError={errMsg => console.log(errMsg)}
                   >
@@ -305,6 +308,17 @@ const CharitySignup = (props) => {
               </InputGroup>
             </FormControl>
             {/* Logo Uploading End*/}
+            <FormControl>
+              <InputGroup>
+                <InputLeftElement
+                  pointerEvents='none'
+                  color='gray.500'
+                  children={<FaEdit color='gray.500' />}
+                />
+                <Input isRequired={true} _placeholder={{ color: 'gray.300' }} value={desc}
+                       onChange={e => setDesc(e.target.value)} type='text' placeholder='Description' />
+              </InputGroup>
+            </FormControl>
             <FormControl>
               <InputGroup>
                 <InputLeftElement

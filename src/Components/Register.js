@@ -1,22 +1,30 @@
 import { createRef, useEffect, useState } from 'react';
 import {
+  Avatar,
+  Box,
+  Button,
+  chakra,
   Flex,
+  FormControl,
   Heading,
   Input,
-  Button,
   InputGroup,
-  Stack,
   InputLeftElement,
-  chakra,
-  Box,
-  Link,
-  Avatar,
-  FormControl,
   InputRightElement,
+  Link,
+  Stack,
   VStack,
 } from '@chakra-ui/react';
 import {
-  FaUserAlt, FaLock, FaBirthdayCake, FaWallet, FaEnvelopeOpen, FaEye, FaEyeSlash, FaPhone,FaFile
+  FaBirthdayCake,
+  FaEnvelopeOpen,
+  FaEye,
+  FaEyeSlash,
+  FaFile,
+  FaLock,
+  FaPhone,
+  FaUserAlt,
+  FaWallet,
 } from 'react-icons/fa';
 import ConnectingToWallet from './ConnectingToWallet';
 import axios from 'axios';
@@ -43,17 +51,18 @@ const SignUp = (props) => {
   const submit = (e) => {
     e.preventDefault();
 
-    axios.post('https://fundtracking.herokuapp.com/user/register', {
-      name: name,
-      phone1: phone,
-      email: email,
-      password: password,
-      dob: dob,
-      username: userName,
-      account_type: 'doner',
-      meta_wallet_address: walletAddress,
-      profile_image: profileImg,
-    })
+    const formData = new FormData();
+    formData.append('name', name);
+    formData.append('phone1', phone);
+    formData.append('email', email);
+    formData.append('dob', dob);
+    formData.append('username', userName);
+    formData.append('password', password);
+    formData.append('account_type', 'doner');
+    formData.append('meta_wallet_address', walletAddress);
+    formData.append('profile_photo', profileImg);
+
+    axios.post('https://fundtracking.herokuapp.com/user/register', formData)
       .then(response => {
         console.log(response);
         if (response.data.status && response.data.access_token) {
@@ -71,18 +80,6 @@ const SignUp = (props) => {
     });
   };
 
-  function setProfileBase64String(file) {
-    let reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = function() {
-      setProfileImg(reader.result);
-    };
-    reader.onerror = function(error) {
-      //TODO make this shit better
-      console.log('Error: ', error);
-    };
-  }
-
   return (<Flex
     flexDirection='column'
     width='100wh'
@@ -95,7 +92,7 @@ const SignUp = (props) => {
       justifyContent='center'
       alignItems='center'>
       <Box minW={{ base: '90%', md: '469px' }}>
-        <form 
+        <form
           onSubmit={(e) => {
             submit(e);
           }}
@@ -107,10 +104,10 @@ const SignUp = (props) => {
           >
             <VStack justifyContent={'center'} flexDirection={'column'} justifyItems={'center'}>
               <Avatar bg='teal.500' />
-              <Heading color='teal.400' >User SignUp</Heading>
+              <Heading color='teal.400'>User SignUp</Heading>
             </VStack>
 
-            <FormControl >
+            <FormControl>
               <InputGroup>
                 <InputLeftElement
                   pointerEvents='none'
@@ -120,7 +117,7 @@ const SignUp = (props) => {
                        onChange={e => setName(e.target.value)} type='text' placeholder='Full Name' />
               </InputGroup>
             </FormControl>
-            
+
             <FormControl>
               <InputGroup>
                 <InputLeftElement
@@ -150,7 +147,7 @@ const SignUp = (props) => {
                 />
               </InputGroup>
             </FormControl>
-            
+
             <FormControl>
               <InputGroup>
                 <InputLeftElement
@@ -169,7 +166,7 @@ const SignUp = (props) => {
                 />
               </InputGroup>
             </FormControl>
-            
+
             <FormControl>
               <InputGroup>
                 <InputLeftElement
@@ -230,7 +227,7 @@ const SignUp = (props) => {
                     extensions={['png', 'jpg', 'jpeg', 'gif']}
                     onChange={(file) => {
                       setImageFileName(file.name);
-                      setProfileBase64String(file);
+                      setProfileImg(file);
                     }}
                     onError={errMsg => console.log(errMsg)}
                   >
@@ -242,7 +239,7 @@ const SignUp = (props) => {
               </InputGroup>
             </FormControl>
             {/* Logo Uploading End*/}
-            
+
             <FormControl>
               <InputGroup>
                 <InputLeftElement
@@ -254,7 +251,7 @@ const SignUp = (props) => {
                        placeholder='Wallet Address' required disabled />
               </InputGroup>
             </FormControl>
-            
+
             <Button
               borderRadius={20}
               type='submit'

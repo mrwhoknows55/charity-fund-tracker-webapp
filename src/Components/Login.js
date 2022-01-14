@@ -57,6 +57,7 @@ const Login = () => {
             console.log('Regular Login');
             history.replace('/');
           }
+          window.location.reload();
         } else {
           const err = response.data.message;
           throw Error('Error: ' + err);
@@ -100,7 +101,7 @@ const Login = () => {
                   />
                   <Input
                     type='email'
-                    placeholder='email address'
+                    placeholder='Email Address'
                     value={email}
                     onChange={e => setEmail(e.target.value)}
                     required

@@ -3,18 +3,11 @@ import { Box, Button, Center, Flex, Heading, Image, SimpleGrid, Stack, Text, VSt
 import axios from 'axios';
 import { useHistory } from 'react-router-dom';
 
-export default function ProductSimple() {
+export default function Charities() {
   const history = useHistory();
   const [charities, setCharities] = useState([]);
 
   useEffect(() => {
-
-    if (window.sessionStorage.getItem('account_type') === 'admin') {
-      history.replace('/admin');
-    } else if (window.sessionStorage.getItem('account_type') === 'charity') {
-      history.replace('/charity');
-    }
-
     axios.get('https://fundtracking.herokuapp.com/charity')
       .then((response) => {
         if (response.data.status) {

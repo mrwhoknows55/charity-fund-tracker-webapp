@@ -118,17 +118,17 @@ export default function Navbar(props) {
                 (accountType === 'admin') ?
                   <>
                     {/*TODO Create these pages*/}
-                    <a href={'/admin/charities'}>
+                    <a href={'/charities'}>
                       <Button>Charities</Button>
                     </a>
-                    <a href={'/admin/donors'}>
+                    <a href={'/donors'}>
                       <Button>Donors</Button>
                     </a>
                   </>
                   : (accountType === 'charity') ?
                     <>
                       {/*TODO Create these pages*/}
-                      <a href={'/admin/donors'}>
+                      <a href={'/donors'}>
                         <Button>Donors</Button>
                       </a>
                     </>
