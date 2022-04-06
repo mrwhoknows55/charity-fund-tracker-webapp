@@ -41,7 +41,6 @@ function CharityDetails() {
   const { username } = useParams();
   const [charity, setCharity] = useState({});
   const [user, setUser] = useState({});
-  const [metaConnected, setMetaConnected] = useState(false);
   const [fundEthContract, setFundEthContract] = useState(null);
   const [contractAddress, setContractAddress] = useState("");
   const [account, setAccount] = useState("");
@@ -113,7 +112,7 @@ function CharityDetails() {
       const networkId = await web3.eth.net.getId()
       const fundEthData = fundEth.networks[networkId]
       if(fundEthData) {
-          const fundEth_Contract = new web3.eth.Contract(fundEth.abi, fundEthData.address)
+          const fundEth_Contract = await new web3.eth.Contract(fundEth.abi, fundEthData.address)
           setContractAddress(fundEthData.address);
           setFundEthContract(fundEth_Contract);
           setSmartContractLoaded(true);
@@ -136,7 +135,7 @@ function CharityDetails() {
         )
         .send(
           {
-            from: user.meta_wallet_address,
+            from: account,
             value: Web3.utils.toWei(ethAmount, 'ether')
           }
         ).then(res => {

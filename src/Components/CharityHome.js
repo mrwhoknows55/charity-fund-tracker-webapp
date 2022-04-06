@@ -1,27 +1,36 @@
 import { Avatar, Button, Center, Heading, HStack, VStack } from '@chakra-ui/react';
 import DonationCard from './DonationCard';
 import ReportCard from './ReportCard';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import Web3 from 'web3';
+import fundEth from '../abi/fundEth.json'
 
-export default function CharityHome() {
+function CharityHome() {
 
   const [profileImg, setProfileImg] = useState('https://avatars.dicebear.com/api/male/username.svg');
   const [charityName, setCharityName] = useState('Charity Name');
+  const [charityWalletAddress, setCharityWalletAddress] = useState('');
   const [expenses, setExpenses] = useState([]);
   const [donations, setDonations] = useState([]);
+  const [donationList, setdonationList] = useState([]);
   const access_token = window.sessionStorage.getItem('access_token');
+  const [fundEthContract, setFundEthContract] = useState("");
+  const [account, setAccount] = useState("");
+  const [smartContractLoaded, setSmartContractLoaded] = useState(false);
 
   useEffect(() => {
+
     axios.get('https://fundtracking.herokuapp.com/user/profile', {
-      headers: { Authorization: 'Bearer ' + access_token },
+        headers: { Authorization: 'Bearer ' + access_token },
     })
       .then(response => {
-        if (response.data.status) {
-          console.log(response.data)
-          setProfileImg(response.data.user.profile_image);
-          setCharityName(response.data.user.name);
-        }
+          if (response.data.status) {
+              console.log(response.data);
+              setProfileImg(response.data.user.profile_image);
+              setCharityName(response.data.user.name);
+              setCharityWalletAddress(response.data.user.meta_wallet_address);
+          }
       })
       .catch((err) => {
         console.error(err);
@@ -52,7 +61,78 @@ export default function CharityHome() {
         alert('Something went wrong');
         console.log('Error: ' + err.message);
       });
-  }, []);
+
+      loadWeb3();
+      loadWallet();
+      loadSmartConrtact();
+      getAllDonations();
+  
+}, []);
+
+
+async function loadWeb3() {
+    try{ 
+        if(window.ethereum) {
+          window.web3 = new Web3(window.ethereum);
+          await window.ethereum.enable();
+          console.log("User meta mask connection successful !");
+        }else if(window.web3) {
+          window.web3 = new Web3(window.web3.currentProvider);
+          console.log("User meta mask connection successful!");
+        }else {
+          window.alert('Non-Ethereum browser detected. You should consider trying MetaMask!');
+        }
+    }catch(e) {
+        if(e.code) {
+          console.log("User meta mask connection request rejected!")
+        }else{
+          console.log(e.message)
+        }
+    }
+  }
+
+  async function loadWallet() {
+    const web3 = window.web3;
+    const accounts = await web3.eth.getAccounts();
+    setAccount(accounts[0]);
+  }
+
+  async function loadSmartConrtact(e) {
+    let web3 = await window.web3
+    const networkId = await web3.eth.net.getId()
+    const fundEthData = fundEth.networks[networkId]
+    if(fundEthData) {
+        const fundEth_Contract = new web3.eth.Contract(fundEth.abi, fundEthData.address);
+        setFundEthContract(fundEth_Contract);
+        setSmartContractLoaded(true);
+    } else {
+        window.alert('fundEth contract not deployed to detected network.')
+    }
+  }
+
+  async function getAllDonations() {
+  if(smartContractLoaded) {
+    fundEthContract.methods
+    .getDonationsOf(charityWalletAddress)
+      .call()
+      .then(res => {
+          console.log(res);
+          let n = [];
+          res.map((value)=> {
+            n.push(value)
+            return null;
+          })
+          n.reverse();
+          console.log(n)
+          setdonationList(n);
+      }).catch(err => {
+          console.log(err)
+          console.log(err.message);
+    })
+  }else{
+    alert("smart contract not loaded!")
+  }
+  }
 
   return (
     <>
@@ -79,13 +159,28 @@ export default function CharityHome() {
               Latest Donations
             </Heading>
             {
-              donations.map((donation) =>
+              // donations.map((donation) =>
+              // <React.Fragment key={donation.donation_id}>
+
+              //   <DonationCard
+              //     avatarUrl={donation.user_profile_image}
+              //     name={donation.user_name}
+              //     date={donation.date}
+              //     value={donation.amount}
+              //     />,
+              // newline
+              //   </React.Fragment>
+              // )
+              donationList.map((donation, index) =>
+              <React.Fragment key={index}>
+
                 <DonationCard
-                  avatarUrl={donation.user_profile_image}
-                  name={donation.user_name}
-                  date={donation.date}
-                  value={donation.amount}
-                />,
+                  avatarUrl={"https://www.logo-company.in/logo/best-logo-designer-company-389.jpg"}
+                  name={donation.doner}
+                  date={(new Date(donation.date*1000)).getDay()+"/"+(new Date(donation.date*1000)).getMonth()+"/"+(new Date(donation.date*1000)).getFullYear()}
+                  value={window.web3.utils.fromWei( donation.eth_in_wei , 'ether')}
+                  />
+                </React.Fragment>
               )
             }
           </VStack>
@@ -101,11 +196,14 @@ export default function CharityHome() {
             </HStack>
             {
               expenses.map((expense) =>
+              <React.Fragment key={expense.expense_id}>
+
                 <ReportCard
                   title={expense.reason}
                   date={expense.date}
                   value={expense.amount}
-                />,
+                  />
+                  </React.Fragment>
               )
             }
           </VStack>
@@ -114,3 +212,5 @@ export default function CharityHome() {
     </>
   );
 }
+
+export default CharityHome;
