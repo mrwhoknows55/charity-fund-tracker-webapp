@@ -15,6 +15,8 @@ import { useParams } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import ReportCard from './ReportCard';
+import Web3 from 'web3';
+import fundEth from '../abi/fundEth.json'
 
 const expenses = [
   {
@@ -38,8 +40,35 @@ const expenses = [
 function CharityDetails() {
   const { username } = useParams();
   const [charity, setCharity] = useState({});
+  const [user, setUser] = useState({});
+  const [metaConnected, setMetaConnected] = useState(false);
+  const [fundEthContract, setFundEthContract] = useState(null);
+  const [contractAddress, setContractAddress] = useState("");
+  const [account, setAccount] = useState("");
+  const [smartContractLoaded, setSmartContractLoaded] = useState(false);
+  const [ethAmount, setEthAmount] = useState("1.0");
+
+  const access_token = window.sessionStorage.getItem('access_token');
 
   useEffect(() => {
+
+    loadWeb3();
+    loadWallet();
+    loadSmartConrtact();
+
+    axios.get('https://fundtracking.herokuapp.com/user/profile', {
+      headers: { Authorization: 'Bearer ' + access_token },
+    })
+      .then(response => {
+        if (response.data.status) {
+          console.log(response.data)
+          setUser(response.data.user);
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+      
     axios.get(`https://fundtracking.herokuapp.com/charity/${username}`)
       .then((response) => {
         if (response.data.status) {
@@ -47,10 +76,84 @@ function CharityDetails() {
           setCharity(response.data.charity);
         }
       }).catch((err) => {
-      alert('Something went wrong');
-      console.log('Error: ' + err.message);
-    });
+        alert('Something went wrong');
+        console.log('Error: ' + err.message);
+      });
   }, []);
+
+  async function loadWeb3() {
+      try{ 
+          if(window.ethereum) {
+            window.web3 = new Web3(window.ethereum);
+            await window.ethereum.enable();
+            console.log("User meta mask connection successful!");
+          }else if(window.web3) {
+            window.web3 = new Web3(window.web3.currentProvider);
+            console.log("User meta mask connection successful!");
+          }else {
+            window.alert('Non-Ethereum browser detected. You should consider trying MetaMask!');
+          }
+      }catch(e) {
+          if(e.code) {
+            console.log("User rejected meta mask connection request!")
+          }else{
+            console.log(e.message)
+          }
+      }
+  }
+
+  async function loadWallet() {
+      const web3 = window.web3;
+      const accounts = await web3.eth.getAccounts();
+      setAccount(accounts[0]);
+  }
+
+  async function loadSmartConrtact(e) {
+      let web3 = window.web3
+      const networkId = await web3.eth.net.getId()
+      const fundEthData = fundEth.networks[networkId]
+      if(fundEthData) {
+          const fundEth_Contract = new web3.eth.Contract(fundEth.abi, fundEthData.address)
+          setContractAddress(fundEthData.address);
+          setFundEthContract(fundEth_Contract);
+          setSmartContractLoaded(true);
+      } else {
+          window.alert('fundEth contract not deployed to detected network.')
+      }
+  }
+
+  async function sendEth() {
+    if(smartContractLoaded) {
+      
+      await fundEthContract.methods
+      .createDonation(charity.meta_wallet_address,
+        (Math.floor(new Date().getTime() / 1000)),
+        false,
+        user.name,
+        user.user_id,
+        charity.name,
+        charity.user_id
+        )
+        .send(
+          {
+            from: user.meta_wallet_address,
+            value: Web3.utils.toWei(ethAmount, 'ether')
+          }
+        ).then(res => {
+            console.log(res)
+            console.log("transaction successfull.")
+            window.web3.eth.getBalance((account)).then(value => {
+               console.log("account balance: " + window.web3.utils.fromWei( value , 'ether') + " ETH"); 
+               alert("transaction successfull (balance: "+window.web3.utils.fromWei( value , 'ether')+")")
+              });
+        }).catch(err => {
+            console.log(err)
+            console.log(err.message);
+      })
+    }else{
+      alert("SmartContract not loaded successfully, please contact the developer of this website if feel necessary...")
+    }
+}
 
   function viewCertDoc(e) {
     e.preventDefault();
@@ -61,6 +164,10 @@ function CharityDetails() {
     } else {
       window.alert('Tax Exemption Certificate Not Available');
     }
+  }
+
+  function donateEth() {
+    sendEth();
   }
 
   return (<>
@@ -94,9 +201,9 @@ function CharityDetails() {
               <Editable defaultValue='1.0' colorScheme={'teal'}>
                 $&nbsp;
                 <EditablePreview />
-                <EditableInput />
+                <EditableInput onChange={e => setEthAmount(e.target.value)} />
               </Editable>
-              <Button colorScheme={'teal'} size={'lg'}>
+              <Button colorScheme={'teal'} size={'lg'} onClick={()=>donateEth()}>
                 Donate Funds
               </Button>
             </VStack>

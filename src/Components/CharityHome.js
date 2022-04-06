@@ -18,6 +18,7 @@ export default function CharityHome() {
     })
       .then(response => {
         if (response.data.status) {
+          console.log(response.data)
           setProfileImg(response.data.user.profile_image);
           setCharityName(response.data.user.name);
         }
