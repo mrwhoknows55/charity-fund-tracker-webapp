@@ -12,6 +12,7 @@ import CharityHome from './Components/CharityHome';
 import Admin from './Components/Admin';
 import NgoDetailForAdmin from './Components/NgoDetailForAdmin';
 import Charities from './Components/Charities';
+import charityHome2 from './Components/charityHome2';
 
 class App extends PureComponent {
   render() {
@@ -25,7 +26,7 @@ class App extends PureComponent {
               <Route exact path='/register' component={Register} />
               <Route exact path='/about' component={About} />
               <Route exact path='/charities' component={Charities} />
-              <Route exact path='/charity' component={CharityHome} />
+              <Route exact path='/charity' component={charityHome2} />
               <Route exact path='/charity/:username' component={CharityDetails} />
               <Route exact path='/ngoRegister' component={NgoRegister} />
               <Route exact path='/admin' component={Admin} />

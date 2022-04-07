@@ -45,7 +45,6 @@ function CharityDetails() {
   const { username } = useParams();
   const [charity, setCharity] = useState({});
   const [user, setUser] = useState({});
-  const [metaConnected, setMetaConnected] = useState(false);
   const [fundEthContract, setFundEthContract] = useState(null);
   const [contractAddress, setContractAddress] = useState('');
   const [account, setAccount] = useState('');
@@ -130,23 +129,21 @@ function CharityDetails() {
   }
 
   async function loadSmartConrtact(e) {
-    let web3 = window.web3;
-    const networkId = await web3.eth.net.getId();
-    const fundEthData = fundEth.networks[networkId];
-    if (fundEthData) {
-      const fundEth_Contract = new web3.eth.Contract(
-        fundEth.abi,
-        fundEthData.address
-      );
-      setContractAddress(fundEthData.address);
-      setFundEthContract(fundEth_Contract);
-      setSmartContractLoaded(true);
-    } else {
-      window.alert('fundEth contract not deployed to detected network.');
-    }
+      let web3 = window.web3
+      const networkId = await web3.eth.net.getId()
+      const fundEthData = fundEth.networks[networkId]
+      if(fundEthData) {
+          const fundEth_Contract = await new web3.eth.Contract(fundEth.abi, fundEthData.address)
+          setContractAddress(fundEthData.address);
+          setFundEthContract(fundEth_Contract);
+          setSmartContractLoaded(true);
+      } else {
+          window.alert('fundEth contract not deployed to detected network.')
+      }
   }
 
   async function sendEth(ethAmount) {
+    console.log("eth : " + ethAmount)
     if (smartContractLoaded) {
       await fundEthContract.methods
         .createDonation(
@@ -158,34 +155,24 @@ function CharityDetails() {
           charity.name,
           charity.user_id
         )
-        .send({
-          from: user.meta_wallet_address,
-          value: Web3.utils.toWei(ethAmount, 'ether'),
-        })
-        .then(res => {
-          console.log(res);
-          console.log('transaction successfull.');
-          window.web3.eth.getBalance(account).then(value => {
-            console.log(
-              'account balance: ' +
-                window.web3.utils.fromWei(value, 'ether') +
-                ' ETH'
-            );
-            alert(
-              'transaction successfull (balance: ' +
-                window.web3.utils.fromWei(value, 'ether') +
-                ')'
-            );
-          });
-        })
-        .catch(err => {
-          console.log(err);
-          console.log(err.message);
-        });
-    } else {
-      alert(
-        'SmartContract not loaded successfully, please contact the developer of this website if feel necessary...'
-      );
+        .send(
+          {
+            from: account,
+            value: Web3.utils.toWei(ethAmount, 'ether')
+          }
+        ).then(res => {
+            console.log(res)
+            console.log("transaction successfull.")
+            window.web3.eth.getBalance((account)).then(value => {
+              //  console.log("account balance: " + window.web3.utils.fromWei( value , 'ether') + " ETH"); 
+              //  alert("transaction successfull (balance: "+window.web3.utils.fromWei( value , 'ether')+")")
+              });
+        }).catch(err => {
+            console.log(err)
+            console.log(err.message);
+      })
+    }else{
+      alert("SmartContract not loaded successfully, please contact the developer of this website if feel necessary...")
     }
   }
 
@@ -213,9 +200,9 @@ function CharityDetails() {
           const mult = response.data.ETH;
           const convertedEthValue = eval(ethAmount * mult);
           console.log('convertedEthValue: ' + convertedEthValue);
-          sendEth(convertedEthValue);
+          sendEth(convertedEthValue.toString());
         } else {
-          sendEth(ethAmount);
+          sendEth(ethAmount.toString());
         }
       })
       .catch(err => {
