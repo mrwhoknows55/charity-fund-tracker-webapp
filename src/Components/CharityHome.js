@@ -14,10 +14,10 @@ function CharityHome() {
   const [expenses, setExpenses] = useState([]);
   const [donations, setDonations] = useState([]);
   const [donationList, setdonationList] = useState([]);
-  const access_token = window.sessionStorage.getItem('access_token');
   const [fundEthContract, setFundEthContract] = useState("");
   const [account, setAccount] = useState("");
   const [smartContractLoaded, setSmartContractLoaded] = useState(false);
+  const access_token = window.sessionStorage.getItem('access_token');
 
   useEffect(() => {
 
