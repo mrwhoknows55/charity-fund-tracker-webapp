@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import {
-  VStack,Heading, Box, Image, Flex, Badge, Text} from '@chakra-ui/react';
+  VStack,Heading, Box, 
+  // Image,
+   Flex, Badge, Text} from '@chakra-ui/react';
 
 class Home extends Component {
   render() {
