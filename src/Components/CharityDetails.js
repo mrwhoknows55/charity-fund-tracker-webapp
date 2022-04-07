@@ -10,13 +10,18 @@ import {
   Text,
   useColorModeValue,
   VStack,
+  InputGroup,
+  Input,
+  InputLeftAddon,
 } from '@chakra-ui/react';
 import { useParams } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import ReportCard from './ReportCard';
 import Web3 from 'web3';
-import fundEth from '../abi/fundEth.json'
+import fundEth from '../abi/fundEth.json';
+import AsyncSelect from 'react-select/async';
+import Select from 'react-select';
 
 const expenses = [
   {
@@ -36,75 +41,91 @@ const expenses = [
   },
 ];
 
-
 function CharityDetails() {
   const { username } = useParams();
   const [charity, setCharity] = useState({});
   const [user, setUser] = useState({});
   const [fundEthContract, setFundEthContract] = useState(null);
-  const [contractAddress, setContractAddress] = useState("");
-  const [account, setAccount] = useState("");
+  const [contractAddress, setContractAddress] = useState('');
+  const [account, setAccount] = useState('');
   const [smartContractLoaded, setSmartContractLoaded] = useState(false);
-  const [ethAmount, setEthAmount] = useState("1.0");
-
+  const [ethAmount, setEthAmount] = useState('');
   const access_token = window.sessionStorage.getItem('access_token');
 
-  useEffect(() => {
+  const [selectedCurrency, setSelectedCurrency] = useState({
+    label: 'Indian Rupee',
+    symbol: 'Rs',
+    symbolNative: '₹',
+    decimalDigits: 2,
+    rounding: 0,
+    value: 'INR',
+    labelPlural: 'Indian rupees',
+  });
+  const handleCurrencySelection = value => {
+    console.log('Selected: ' + value);
+    setSelectedCurrency(value);
+  };
+  const currencies = require('../data/currencies.json');
 
+  useEffect(() => {
     loadWeb3();
     loadWallet();
     loadSmartConrtact();
-
-    axios.get('https://fundtracking.herokuapp.com/user/profile', {
-      headers: { Authorization: 'Bearer ' + access_token },
-    })
+    axios
+      .get('https://fundtracking.herokuapp.com/user/profile', {
+        headers: { Authorization: 'Bearer ' + access_token },
+      })
       .then(response => {
         if (response.data.status) {
-          console.log(response.data)
+          console.log(response.data);
           setUser(response.data.user);
         }
       })
-      .catch((err) => {
+      .catch(err => {
         console.error(err);
       });
-      
-    axios.get(`https://fundtracking.herokuapp.com/charity/${username}`)
-      .then((response) => {
+
+    axios
+      .get(`https://fundtracking.herokuapp.com/charity/${username}`)
+      .then(response => {
         if (response.data.status) {
           console.log(response.data);
           setCharity(response.data.charity);
         }
-      }).catch((err) => {
+      })
+      .catch(err => {
         alert('Something went wrong');
         console.log('Error: ' + err.message);
       });
   }, []);
 
   async function loadWeb3() {
-      try{ 
-          if(window.ethereum) {
-            window.web3 = new Web3(window.ethereum);
-            await window.ethereum.enable();
-            console.log("User meta mask connection successful!");
-          }else if(window.web3) {
-            window.web3 = new Web3(window.web3.currentProvider);
-            console.log("User meta mask connection successful!");
-          }else {
-            window.alert('Non-Ethereum browser detected. You should consider trying MetaMask!');
-          }
-      }catch(e) {
-          if(e.code) {
-            console.log("User rejected meta mask connection request!")
-          }else{
-            console.log(e.message)
-          }
+    try {
+      if (window.ethereum) {
+        window.web3 = new Web3(window.ethereum);
+        await window.ethereum.enable();
+        console.log('User meta mask connection successful!');
+      } else if (window.web3) {
+        window.web3 = new Web3(window.web3.currentProvider);
+        console.log('User meta mask connection successful!');
+      } else {
+        window.alert(
+          'Non-Ethereum browser detected. You should consider trying MetaMask!'
+        );
       }
+    } catch (e) {
+      if (e.code) {
+        console.log('User rejected meta mask connection request!');
+      } else {
+        console.log(e.message);
+      }
+    }
   }
 
   async function loadWallet() {
-      const web3 = window.web3;
-      const accounts = await web3.eth.getAccounts();
-      setAccount(accounts[0]);
+    const web3 = window.web3;
+    const accounts = await web3.eth.getAccounts();
+    setAccount(accounts[0]);
   }
 
   async function loadSmartConrtact(e) {
@@ -121,17 +142,18 @@ function CharityDetails() {
       }
   }
 
-  async function sendEth() {
-    if(smartContractLoaded) {
-      
+  async function sendEth(ethAmount) {
+    console.log("eth : " + ethAmount)
+    if (smartContractLoaded) {
       await fundEthContract.methods
-      .createDonation(charity.meta_wallet_address,
-        (Math.floor(new Date().getTime() / 1000)),
-        false,
-        user.name,
-        user.user_id,
-        charity.name,
-        charity.user_id
+        .createDonation(
+          charity.meta_wallet_address,
+          Math.floor(new Date().getTime() / 1000),
+          false,
+          user.name,
+          user.user_id,
+          charity.name,
+          charity.user_id
         )
         .send(
           {
@@ -142,8 +164,8 @@ function CharityDetails() {
             console.log(res)
             console.log("transaction successfull.")
             window.web3.eth.getBalance((account)).then(value => {
-               console.log("account balance: " + window.web3.utils.fromWei( value , 'ether') + " ETH"); 
-               alert("transaction successfull (balance: "+window.web3.utils.fromWei( value , 'ether')+")")
+              //  console.log("account balance: " + window.web3.utils.fromWei( value , 'ether') + " ETH"); 
+              //  alert("transaction successfull (balance: "+window.web3.utils.fromWei( value , 'ether')+")")
               });
         }).catch(err => {
             console.log(err)
@@ -152,140 +174,207 @@ function CharityDetails() {
     }else{
       alert("SmartContract not loaded successfully, please contact the developer of this website if feel necessary...")
     }
-}
+  }
 
   function viewCertDoc(e) {
     e.preventDefault();
     if (charity.charityDetails && charity.charityDetails.tax_exc_cert) {
       // const fileURI = charity.charityDetails.tax_exc_cert.replace('data:application/pdf;base64,', '');
-       window.open(charity.charityDetails.tax_exc_cert,"_blank");
+      window.open(charity.charityDetails.tax_exc_cert, '_blank');
       // pdfWindow.document.write('<iframe width=\'100%\' height=\'100%\' src=\'data:application/pdf;base64, ' + encodeURI(fileURI) + '\'></iframe>');
     } else {
       window.alert('Tax Exemption Certificate Not Available');
     }
   }
 
-  function donateEth() {
-    sendEth();
-  }
+  async function donateEth() {
+    const apiLink = `https://min-api.cryptocompare.com/data/price?fsym=${selectedCurrency.value}&tsyms=ETH`;
+    console.log('LINK: ' + apiLink);
+    await axios
+      .get(apiLink)
+      .then(response => {
+        console.log('response: ' + JSON.stringify(response));
 
-  return (<>
-    <VStack order={'column'} overflow={'hidden'} spacing={8} maxWidth={'100%'} width={'100%'}>
-      <VStack py={'2vh'} marginTop={'2vh'}>
-        <Flex px={'2vw'} w={'100vw'} h={'35vh'} bg={useColorModeValue('gray.100', 'gray.900')}>
-          <HStack w={'100vw'} spacing={'5vw'} justifyContent={'space-evenly'}>
-            <HStack spacing={'2vw'}>
-              <Image marginStart={'2vw'} w='12vw' src={charity.profile_image} borderRadius='full' />
-              <VStack alignItems={'flex-start'}>
-                <Heading mb={'2vh'} fontSize={'46'}>
-                  {charity.name}
-                </Heading>
-                <Text>
-                  <b>Founded
-                    on:</b> {(charity.charityDetails && charity.charityDetails.founded_in) ? charity.charityDetails.founded_in : ''}
-                </Text>
-                <Text>
-                  Total
-                  Funding:
-                  ₹ {(charity.charityDetails && charity.charityDetails.total_fundings) ? charity.charityDetails.total_fundings : ``}
-                </Text>
-                <Text>
-                  Total
-                  expenditure:
-                  ₹ {(charity.charityDetails && charity.charityDetails.total_expenditure) ? charity.charityDetails.total_expenditure : ``}
-                </Text>
+        if (response.data.ETH) {
+          console.log(response.data.ETH);
+          const mult = response.data.ETH;
+          const convertedEthValue = eval(ethAmount * mult);
+          console.log('convertedEthValue: ' + convertedEthValue);
+          sendEth(convertedEthValue.toString());
+        } else {
+          sendEth(ethAmount.toString());
+        }
+      })
+      .catch(err => {
+        console.error(err);
+      });
+  }
+  return (
+    <>
+      <VStack
+        order={'column'}
+        overflow={'hidden'}
+        spacing={8}
+        maxWidth={'100%'}
+        width={'100%'}
+      >
+        <VStack py={'2vh'} marginTop={'2vh'}>
+          <Flex
+            px={'2vw'}
+            w={'100vw'}
+            h={'35vh'}
+            bg={useColorModeValue('gray.100', 'gray.900')}
+          >
+            <HStack
+              w={'100vw'}
+              spacing={'10vw'}
+              justifyContent={'space-evenly'}
+            >
+              <HStack spacing={'2vw'}>
+                <Image
+                  marginStart={'2vw'}
+                  w="12vw"
+                  src={charity.profile_image}
+                  borderRadius="full"
+                />
+                <VStack alignItems={'flex-start'}>
+                  <Heading mb={'2vh'} fontSize={'46'}>
+                    {charity.name}
+                  </Heading>
+                  <Text>
+                    <b>Founded on:</b>{' '}
+                    {charity.charityDetails && charity.charityDetails.founded_in
+                      ? charity.charityDetails.founded_in
+                      : ''}
+                  </Text>
+                  <Text>
+                    Total Funding: ₹{' '}
+                    {charity.charityDetails &&
+                    charity.charityDetails.total_fundings
+                      ? charity.charityDetails.total_fundings
+                      : ``}
+                  </Text>
+                  <Text>
+                    Total expenditure: ₹{' '}
+                    {charity.charityDetails &&
+                    charity.charityDetails.total_expenditure
+                      ? charity.charityDetails.total_expenditure
+                      : ``}
+                  </Text>
+                </VStack>
+              </HStack>
+              <VStack>
+                <Select
+                  defaultOptions
+                  value={selectedCurrency}
+                  options={currencies}
+                  onChange={handleCurrencySelection}
+                />
+                <InputGroup>
+                  {/* <InputLeftAddon>
+                    <Select
+                      defaultOptions
+                      value={selectedCurrency}
+                      options={currencies}
+                      onChange={handleCurrencySelection}
+                      maxWidth="2vw"
+                    />
+                  </InputLeftAddon> */}
+                  <Input
+                    placeholder={
+                      'amount in ' +
+                      selectedCurrency.symbolNative +
+                      ' (eg. 245)'
+                    }
+                    onChange={e => setEthAmount(e.target.value)}
+                  />
+                </InputGroup>
+
+                <Button
+                  colorScheme={'teal'}
+                  size={'lg'}
+                  onClick={() => donateEth()}
+                >
+                  Donate Funds
+                </Button>
+              </VStack>
+              <VStack
+                spacing={'1vw'}
+                alignItems={'center'}
+                paddingRight={'2vw'}
+              >
+                <Button
+                  colorScheme={'teal'}
+                  size={'lg'}
+                  onClick={e => viewCertDoc(e)}
+                >
+                  Tax Certificate
+                </Button>
+                <Button colorScheme={'teal'} size={'lg'}>
+                  Expense Report
+                </Button>
               </VStack>
             </HStack>
-            <VStack>
-              <Editable defaultValue='1.0' colorScheme={'teal'}>
-                $&nbsp;
-                <EditablePreview />
-                <EditableInput onChange={e => setEthAmount(e.target.value)} />
-              </Editable>
-              <Button colorScheme={'teal'} size={'lg'} onClick={()=>donateEth()}>
-                Donate Funds
-              </Button>
+          </Flex>
+          <HStack>
+            <VStack
+              paddingTop={'2vh'}
+              alignSelf={'flex-start'}
+              alignItems={'flex-start'}
+              width={'50vw'}
+              paddingStart={'100px'}
+            >
+              <Heading>Description</Heading>
+
+              {charity.description ? (
+                <Text align={'justify'}>{charity.description}</Text>
+              ) : (
+                <Text align={'justify'}>
+                  Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+                  Animi aperiam enim quo recusandae vero! Culpa hic impedit
+                  maxime quaerat voluptate. Debitis dolores fugiat harum
+                  laboriosam libero modi provident? Aliquam amet at autem
+                  corporis culpa cumque, dolore ea eius enim ex fugiat illo
+                  impedit in libero maiores minus nobis officia pariatur
+                  perferendis possimus qui quibusdam quisquam quos ratione rem
+                  repellat rerum sequi similique sint soluta tenetur totam vel
+                  voluptatem. Atque aut autem blanditiis consectetur cumque
+                  debitis delectus deleniti dolore doloribus et eveniet facere
+                  id ipsum maiores maxime molestias necessitatibus nisi, nostrum
+                  omnis quae qui quidem quisquam recusandae sit soluta sunt
+                  voluptas voluptatem! A ducimus eum eveniet id illum nisi saepe
+                  veritatis, voluptatum. Ab beatae culpa delectus dicta
+                  distinctio dolorem doloribus eaque earum eius enim est eveniet
+                  ex facere in, minima mollitia natus obcaecati odio odit
+                  officia optio perspiciatis quasi quidem sunt voluptates? A ad
+                  aliquam autem cupiditate debitis doloremque dolores, fugit
+                  ipsa labore optio perspiciatis reiciendis sunt voluptates?
+                  Aliquam eligendi eos error hic in non repudiandae saepe
+                  temporibus voluptatum. Ab animi autem eos nihil perspiciatis
+                  quae quibusdam repellendus rerum? Culpa, cum delectus dolorem
+                  doloribus eligendi facere fugit incidunt laborum odio
+                  perspiciatis placeat porro quas quasi quibusdam repudiandae
+                  unde, voluptates? Accusamus, distinctio?
+                </Text>
+              )}
             </VStack>
-            <VStack spacing={'1vw'} alignItems={'center'} paddingRight={'2vw'}>
-              <Button colorScheme={'teal'} size={'lg'} onClick={(e) => viewCertDoc(e)}>
-                Tax Certificate
-              </Button>
-              <Button colorScheme={'teal'} size={'lg'}>
-                Expense Report
-              </Button>
-            </VStack>
-          </HStack>
-        </Flex>
-        <HStack>
-          <VStack paddingTop={'2vh'} alignSelf={'flex-start'} alignItems={'flex-start'} width={'50vw'}
-                  paddingStart={'100px'}>
-
-            <Heading>
-              Description
-            </Heading>
-
-            {(charity.description) ?
-              <Text align={'justify'}>
-                {charity.description}
-              </Text>
-              :
-              <Text align={'justify'}>
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Animi aperiam enim quo recusandae vero! Culpa
-                hic
-                impedit maxime quaerat voluptate. Debitis dolores fugiat harum laboriosam libero modi provident? Aliquam
-                amet at
-                autem corporis culpa cumque, dolore ea eius enim ex fugiat illo impedit in libero maiores minus nobis
-                officia
-                pariatur perferendis possimus qui quibusdam quisquam quos ratione rem repellat rerum sequi similique
-                sint
-                soluta
-                tenetur totam vel voluptatem. Atque aut autem blanditiis consectetur cumque debitis delectus deleniti
-                dolore
-                doloribus et eveniet facere id ipsum maiores maxime molestias necessitatibus nisi, nostrum omnis quae
-                qui
-                quidem
-                quisquam recusandae sit soluta sunt voluptas voluptatem! A ducimus eum eveniet id illum nisi saepe
-                veritatis,
-                voluptatum. Ab beatae culpa delectus dicta distinctio dolorem doloribus eaque earum eius enim est
-                eveniet
-                ex
-                facere in, minima mollitia natus obcaecati odio odit officia optio perspiciatis quasi quidem sunt
-                voluptates? A
-                ad aliquam autem cupiditate debitis doloremque dolores, fugit ipsa labore optio perspiciatis reiciendis
-                sunt
-                voluptates? Aliquam eligendi eos error hic in non repudiandae saepe temporibus voluptatum. Ab animi
-                autem
-                eos
-                nihil perspiciatis quae quibusdam repellendus rerum? Culpa, cum delectus dolorem doloribus eligendi
-                facere
-                fugit
-                incidunt laborum odio perspiciatis placeat porro quas quasi quibusdam repudiandae unde, voluptates?
-                Accusamus,
-                distinctio?
-              </Text>
-            }
-
-
-          </VStack>
-          <VStack spacing={8} px={12} marginTop={90}>
-            <Heading alignSelf={'start'} paddingTop={'5'}>
-              Latest Expenses
-            </Heading>
-            {
-              expenses.map((expense) =>
+            <VStack spacing={8} px={12} marginTop={90}>
+              <Heading alignSelf={'start'} paddingTop={'5'}>
+                Latest Expenses
+              </Heading>
+              {expenses.map(expense => (
                 <ReportCard
                   title={expense.title}
                   date={expense.date}
                   value={expense.value}
-                />,
-              )
-            }
-          </VStack>
-        </HStack>
+                />
+              ))}
+            </VStack>
+          </HStack>
+        </VStack>
       </VStack>
-    </VStack>
-  </>)
-    ;
+    </>
+  );
 }
 
 export default CharityDetails;
