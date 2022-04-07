@@ -1,0 +1,478 @@
+[
+  {
+    "value": "USD",
+    "label": "US Dollar (USD)"
+  },
+  {
+    "value": "CAD",
+    "label": "Canadian Dollar (CAD)"
+  },
+  {
+    "value": "EUR",
+    "label": "Euro (EUR)"
+  },
+  {
+    "value": "AED",
+    "label": "United Arab Emirates Dirham (AED)"
+  },
+  {
+    "value": "AFN",
+    "label": "Afghan Afghani (AFN)"
+  },
+  {
+    "value": "ALL",
+    "label": "Albanian Lek (ALL)"
+  },
+  {
+    "value": "AMD",
+    "label": "Armenian Dram (AMD)"
+  },
+  {
+    "value": "ARS",
+    "label": "Argentine Peso (ARS)"
+  },
+  {
+    "value": "AUD",
+    "label": "Australian Dollar (AUD)"
+  },
+  {
+    "value": "AZN",
+    "label": "Azerbaijani Manat (AZN)"
+  },
+  {
+    "value": "BAM",
+    "label": "Bosnia-Herzegovina Convertible Mark (BAM)"
+  },
+  {
+    "value": "BDT",
+    "label": "Bangladeshi Taka (BDT)"
+  },
+  {
+    "value": "BGN",
+    "label": "Bulgarian Lev (BGN)"
+  },
+  {
+    "value": "BHD",
+    "label": "Bahraini Dinar (BHD)"
+  },
+  {
+    "value": "BIF",
+    "label": "Burundian Franc (BIF)"
+  },
+  {
+    "value": "BND",
+    "label": "Brunei Dollar (BND)"
+  },
+  {
+    "value": "BOB",
+    "label": "Bolivian Boliviano (BOB)"
+  },
+  {
+    "value": "BRL",
+    "label": "Brazilian Real (BRL)"
+  },
+  {
+    "value": "BWP",
+    "label": "Botswanan Pula (BWP)"
+  },
+  {
+    "value": "BYN",
+    "label": "Belarusian Ruble (BYN)"
+  },
+  {
+    "value": "BZD",
+    "label": "Belize Dollar (BZD)"
+  },
+  {
+    "value": "CDF",
+    "label": "Congolese Franc (CDF)"
+  },
+  {
+    "value": "CHF",
+    "label": "Swiss Franc (CHF)"
+  },
+  {
+    "value": "CLP",
+    "label": "Chilean Peso (CLP)"
+  },
+  {
+    "value": "CNY",
+    "label": "Chinese Yuan (CNY)"
+  },
+  {
+    "value": "COP",
+    "label": "Colombian Peso (COP)"
+  },
+  {
+    "value": "CRC",
+    "label": "Costa Rican Colón (CRC)"
+  },
+  {
+    "value": "CVE",
+    "label": "Cape Verdean Escudo (CVE)"
+  },
+  {
+    "value": "CZK",
+    "label": "Czech Republic Koruna (CZK)"
+  },
+  {
+    "value": "DJF",
+    "label": "Djiboutian Franc (DJF)"
+  },
+  {
+    "value": "DKK",
+    "label": "Danish Krone (DKK)"
+  },
+  {
+    "value": "DOP",
+    "label": "Dominican Peso (DOP)"
+  },
+  {
+    "value": "DZD",
+    "label": "Algerian Dinar (DZD)"
+  },
+  {
+    "value": "EEK",
+    "label": "Estonian Kroon (EEK)"
+  },
+  {
+    "value": "EGP",
+    "label": "Egyptian Pound (EGP)"
+  },
+  {
+    "value": "ERN",
+    "label": "Eritrean Nakfa (ERN)"
+  },
+  {
+    "value": "ETB",
+    "label": "Ethiopian Birr (ETB)"
+  },
+  {
+    "value": "GBP",
+    "label": "British Pound Sterling (GBP)"
+  },
+  {
+    "value": "GEL",
+    "label": "Georgian Lari (GEL)"
+  },
+  {
+    "value": "GHS",
+    "label": "Ghanaian Cedi (GHS)"
+  },
+  {
+    "value": "GNF",
+    "label": "Guinean Franc (GNF)"
+  },
+  {
+    "value": "GTQ",
+    "label": "Guatemalan Quetzal (GTQ)"
+  },
+  {
+    "value": "HKD",
+    "label": "Hong Kong Dollar (HKD)"
+  },
+  {
+    "value": "HNL",
+    "label": "Honduran Lempira (HNL)"
+  },
+  {
+    "value": "HRK",
+    "label": "Croatian Kuna (HRK)"
+  },
+  {
+    "value": "HUF",
+    "label": "Hungarian Forint (HUF)"
+  },
+  {
+    "value": "IDR",
+    "label": "Indonesian Rupiah (IDR)"
+  },
+  {
+    "value": "ILS",
+    "label": "Israeli New Sheqel (ILS)"
+  },
+  {
+    "value": "INR",
+    "label": "Indian Rupee (INR)"
+  },
+  {
+    "value": "IQD",
+    "label": "Iraqi Dinar (IQD)"
+  },
+  {
+    "value": "IRR",
+    "label": "Iranian Rial (IRR)"
+  },
+  {
+    "value": "ISK",
+    "label": "Icelandic Króna (ISK)"
+  },
+  {
+    "value": "JMD",
+    "label": "Jamaican Dollar (JMD)"
+  },
+  {
+    "value": "JOD",
+    "label": "Jordanian Dinar (JOD)"
+  },
+  {
+    "value": "JPY",
+    "label": "Japanese Yen (JPY)"
+  },
+  {
+    "value": "KES",
+    "label": "Kenyan Shilling (KES)"
+  },
+  {
+    "value": "KHR",
+    "label": "Cambodian Riel (KHR)"
+  },
+  {
+    "value": "KMF",
+    "label": "Comorian Franc (KMF)"
+  },
+  {
+    "value": "KRW",
+    "label": "South Korean Won (KRW)"
+  },
+  {
+    "value": "KWD",
+    "label": "Kuwaiti Dinar (KWD)"
+  },
+  {
+    "value": "KZT",
+    "label": "Kazakhstani Tenge (KZT)"
+  },
+  {
+    "value": "LBP",
+    "label": "Lebanese Pound (LBP)"
+  },
+  {
+    "value": "LKR",
+    "label": "Sri Lankan Rupee (LKR)"
+  },
+  {
+    "value": "LTL",
+    "label": "Lithuanian Litas (LTL)"
+  },
+  {
+    "value": "LVL",
+    "label": "Latvian Lats (LVL)"
+  },
+  {
+    "value": "LYD",
+    "label": "Libyan Dinar (LYD)"
+  },
+  {
+    "value": "MAD",
+    "label": "Moroccan Dirham (MAD)"
+  },
+  {
+    "value": "MDL",
+    "label": "Moldovan Leu (MDL)"
+  },
+  {
+    "value": "MGA",
+    "label": "Malagasy Ariary (MGA)"
+  },
+  {
+    "value": "MKD",
+    "label": "Macedonian Denar (MKD)"
+  },
+  {
+    "value": "MMK",
+    "label": "Myanma Kyat (MMK)"
+  },
+  {
+    "value": "MOP",
+    "label": "Macanese Pataca (MOP)"
+  },
+  {
+    "value": "MUR",
+    "label": "Mauritian Rupee (MUR)"
+  },
+  {
+    "value": "MXN",
+    "label": "Mexican Peso (MXN)"
+  },
+  {
+    "value": "MYR",
+    "label": "Malaysian Ringgit (MYR)"
+  },
+  {
+    "value": "MZN",
+    "label": "Mozambican Metical (MZN)"
+  },
+  {
+    "value": "NAD",
+    "label": "Namibian Dollar (NAD)"
+  },
+  {
+    "value": "NGN",
+    "label": "Nigerian Naira (NGN)"
+  },
+  {
+    "value": "NIO",
+    "label": "Nicaraguan Córdoba (NIO)"
+  },
+  {
+    "value": "NOK",
+    "label": "Norwegian Krone (NOK)"
+  },
+  {
+    "value": "NPR",
+    "label": "Nepalese Rupee (NPR)"
+  },
+  {
+    "value": "NZD",
+    "label": "New Zealand Dollar (NZD)"
+  },
+  {
+    "value": "OMR",
+    "label": "Omani Rial (OMR)"
+  },
+  {
+    "value": "PAB",
+    "label": "Panamanian Balboa (PAB)"
+  },
+  {
+    "value": "PEN",
+    "label": "Peruvian Nuevo Sol (PEN)"
+  },
+  {
+    "value": "PHP",
+    "label": "Philippine Peso (PHP)"
+  },
+  {
+    "value": "PKR",
+    "label": "Pakistani Rupee (PKR)"
+  },
+  {
+    "value": "PLN",
+    "label": "Polish Zloty (PLN)"
+  },
+  {
+    "value": "PYG",
+    "label": "Paraguayan Guarani (PYG)"
+  },
+  {
+    "value": "QAR",
+    "label": "Qatari Rial (QAR)"
+  },
+  {
+    "value": "RON",
+    "label": "Romanian Leu (RON)"
+  },
+  {
+    "value": "RSD",
+    "label": "Serbian Dinar (RSD)"
+  },
+  {
+    "value": "RUB",
+    "label": "Russian Ruble (RUB)"
+  },
+  {
+    "value": "RWF",
+    "label": "Rwandan Franc (RWF)"
+  },
+  {
+    "value": "SAR",
+    "label": "Saudi Riyal (SAR)"
+  },
+  {
+    "value": "SDG",
+    "label": "Sudanese Pound (SDG)"
+  },
+  {
+    "value": "SEK",
+    "label": "Swedish Krona (SEK)"
+  },
+  {
+    "value": "SGD",
+    "label": "Singapore Dollar (SGD)"
+  },
+  {
+    "value": "SOS",
+    "label": "Somali Shilling (SOS)"
+  },
+  {
+    "value": "SYP",
+    "label": "Syrian Pound (SYP)"
+  },
+  {
+    "value": "THB",
+    "label": "Thai Baht (THB)"
+  },
+  {
+    "value": "TND",
+    "label": "Tunisian Dinar (TND)"
+  },
+  {
+    "value": "TOP",
+    "label": "Tongan Paʻanga (TOP)"
+  },
+  {
+    "value": "TRY",
+    "label": "Turkish Lira (TRY)"
+  },
+  {
+    "value": "TTD",
+    "label": "Trinidad and Tobago Dollar (TTD)"
+  },
+  {
+    "value": "TWD",
+    "label": "New Taiwan Dollar (TWD)"
+  },
+  {
+    "value": "TZS",
+    "label": "Tanzanian Shilling (TZS)"
+  },
+  {
+    "value": "UAH",
+    "label": "Ukrainian Hryvnia (UAH)"
+  },
+  {
+    "value": "UGX",
+    "label": "Ugandan Shilling (UGX)"
+  },
+  {
+    "value": "UYU",
+    "label": "Uruguayan Peso (UYU)"
+  },
+  {
+    "value": "UZS",
+    "label": "Uzbekistan Som (UZS)"
+  },
+  {
+    "value": "VEF",
+    "label": "Venezuelan Bolívar (VEF)"
+  },
+  {
+    "value": "VND",
+    "label": "Vietlabelse Dong (VND)"
+  },
+  {
+    "value": "XAF",
+    "label": "CFA Franc BEAC (XAF)"
+  },
+  {
+    "value": "XOF",
+    "label": "CFA Franc BCEAO (XOF)"
+  },
+  {
+    "value": "YER",
+    "label": "Yemeni Rial (YER)"
+  },
+  {
+    "value": "ZAR",
+    "label": "South African Rand (ZAR)"
+  },
+  {
+    "value": "ZMK",
+    "label": "Zambian Kwacha (ZMK)"
+  },
+  {
+    "value": "ZWL",
+    "label": "Zimbabwean Dollar (ZWL)"
+  }
+]
