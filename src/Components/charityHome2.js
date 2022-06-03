@@ -28,6 +28,7 @@ class charityHome2 extends PureComponent {
         this.loadWallet = this.loadWallet.bind(this);
         this.loadSmartConrtact = this.loadSmartConrtact.bind(this);
         this.getAllDonations = this.getAllDonations.bind(this);
+        this.getAccountTransactions = this.getAccountTransactions.bind(this);
 
     }
 
@@ -84,6 +85,7 @@ class charityHome2 extends PureComponent {
       await this.loadWallet();
       await this.loadSmartConrtact();
       await this.getAllDonations();
+      await this.getAccountTransactions(this.state.charityWalletAddress);
 
       this.loadWallet = this.loadWallet.bind(this);
       this.loadWeb3 = this.loadWeb3.bind(this);
@@ -92,6 +94,58 @@ class charityHome2 extends PureComponent {
 
     }
 
+    async getAccountTransactions(accAddress) {
+        // You can do a NULL check for the start/end blockNumber
+        let web3 = window.web3
+        let endBlockNumber = 0
+    
+        await web3.eth.getBlockNumber().then(res => {
+          if(res)
+            endBlockNumber = res;
+        })
+      
+        console.log("Searching for transactions to/from account \"" + accAddress + "\" within blocks "  + 0 + " and " + endBlockNumber);
+      
+        for (var i = 0; i <= endBlockNumber; i++) {
+          var block = web3.eth.getBlock(i, true)
+          block.then(resBlock => {
+            if(i<10)
+              console.log(resBlock)
+    
+              let  t_expenses = []
+              if (resBlock != null && resBlock.transactions != null) {
+                resBlock.transactions.forEach( function(e) {
+                  let t_transaction = {
+                    nonce: e.nonce,
+                    blockHash: e.blockHash,
+                    blockNumber: e.blockNumber,
+                    transactionIndex: e.transactionIndex,
+                    from: e.from,
+                    to: e.to,
+                    value: window.web3.utils.fromWei( e.value , 'ether') + "ETH",
+                    gasPrice: e.gasPrice,
+                    gas: e.gas,
+                    timestamp: new Date(e.timestamp*1000).toLocaleString()
+                  };
+                //   t_expenses.append(t_transaction);
+                  if (accAddress == "*" || accAddress == e.from || accAddress == e.to) {
+                      console.log("  tx hash          : " + e.hash + "\n"
+                      + "   nonce           : " + e.nonce + "\n"
+                      + "   blockHash       : " + e.blockHash + "\n"
+                      + "   blockNumber     : " + e.blockNumber + "\n"
+                      + "   transactionIndex: " + e.transactionIndex + "\n"
+                      + "   from            : " + e.from + "\n" 
+                      + "   to              : " + e.to + "\n"
+                      + "   value           : " + window.web3.utils.fromWei( e.value , 'ether') + "ETH \n"
+                      + "   gasPrice        : " + e.gasPrice + "\n"
+                      + "   gas             : " + e.gas + "\n");
+                  }
+                })
+              }
+          })
+        }
+      }
+    
     
     async loadWeb3() {
         try{ 
