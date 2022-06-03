@@ -145,32 +145,38 @@ function CharityDetails() {
   async function sendEth(ethAmount) {
     console.log("eth : " + ethAmount)
     if (smartContractLoaded) {
-      await fundEthContract.methods
-        .createDonation(
-          charity.meta_wallet_address,
-          Math.floor(new Date().getTime() / 1000),
-          false,
-          user.name,
-          user.user_id,
-          charity.name,
-          charity.user_id
-        )
-        .send(
-          {
-            from: account,
-            value: Web3.utils.toWei(ethAmount, 'ether')
-          }
-        ).then(res => {
-            console.log(res)
-            console.log("transaction successfull.")
-            window.web3.eth.getBalance((account)).then(value => {
-              //  console.log("account balance: " + window.web3.utils.fromWei( value , 'ether') + " ETH"); 
-              //  alert("transaction successfull (balance: "+window.web3.utils.fromWei( value , 'ether')+")")
-              });
-        }).catch(err => {
-            console.log(err)
-            console.log(err.message);
-      })
+      try {
+        await fundEthContract.methods
+          .createDonation(
+            charity.meta_wallet_address,
+            Math.floor(new Date().getTime() / 1000),
+            false,
+            user.name,
+            user.user_id,
+            charity.name,
+            charity.user_id
+          ).send(
+            {
+              from: account,
+              value: Web3.utils.toWei(ethAmount, 'ether'),
+            }
+          ).then(async res => {
+              console.log(res)
+              console.log("transaction successfull.")
+              window.web3.eth.getBalance((account)).then(value => {
+                //  console.log("account balance: " + window.web3.utils.fromWei( value , 'ether') + " ETH"); 
+                //  alert("transaction successfull (balance: "+window.web3.utils.fromWei( value , 'ether')+")")
+                });
+          }).catch(async err => {
+              console.log(err)
+              console.log(err.message);
+        }) 
+      } catch (error) {
+        if (error.name === 'TypeError') {
+          alert('Please login to use Donate feature!!!')
+          document.location.href = '/login'
+        }
+      }
     }else{
       alert("SmartContract not loaded successfully, please contact the developer of this website if feel necessary...")
     }
@@ -200,7 +206,7 @@ function CharityDetails() {
           const mult = response.data.ETH;
           const convertedEthValue = eval(ethAmount * mult);
           console.log('convertedEthValue: ' + convertedEthValue);
-          sendEth(convertedEthValue.toString());
+          sendEth(convertedEthValue.toString().substr(0, convertedEthValue.toString().length-(convertedEthValue.toString().length-20)));
         } else {
           sendEth(ethAmount.toString());
         }
