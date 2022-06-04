@@ -125,6 +125,8 @@ async function loadWeb3() {
           })
           n.reverse();
           console.log(n)
+          n = new Set(n)
+          n = Array.from(n)
           setdonationList(n);
       }).catch(err => {
           console.log(err)
