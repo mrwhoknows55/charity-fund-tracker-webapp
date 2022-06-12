@@ -15,17 +15,17 @@ export default function ReportCard(props) {
       <Stack
         borderWidth="1px"
         borderRadius="lg"
-        w={{ sm: '100%', md: '50rem' }}
-        height={{ sm: '476px', md: '8rem' }}
+        w={"40vw"}
+        height={"12vh"}
         direction={{ base: 'column', md: 'row' }}
         bg={useColorModeValue('white', 'gray.800')}
         boxShadow={'2xl'}
         padding={4}
       >
-        <HStack width={'40vw'} justifyContent={'space-between'}>
-          <VStack spacing={2} align={'start'} padding={10}>
+        <HStack width={'40vw'} justifyContent={'space-between'} m="1vw">
+          <VStack spacing={2} align={'start'} m="1vw">
             <Skeleton isLoaded={isLoaded}>
-              <Text as="b" fontSize="xl">
+              <Text as="b" fontSize={{sm:'lg', md:"xl"}}>
                 {props.title}
               </Text>
             </Skeleton>
@@ -36,7 +36,7 @@ export default function ReportCard(props) {
             </SkeletonText>
           </VStack>
           <Skeleton isLoaded={isLoaded} m="2">
-            <Text as="b" fontSize="4xl" align="left" padding={10}>
+            <Text as="b"  fontSize={{sm:'lg', md:"3xl"}} align="left" m="1vw">
               $ {props.value}
             </Text>
           </Skeleton>
