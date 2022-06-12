@@ -13,10 +13,10 @@ export default function ReportCard(props) {
   return (
     <>
       <Stack
-        borderWidth="1px"
+        borderWidth="2px"
         borderRadius="lg"
-        w={"40vw"}
-        height={"12vh"}
+        w={'40vw'}
+        height={'14vh'}
         direction={{ base: 'column', md: 'row' }}
         bg={useColorModeValue('white', 'gray.800')}
         boxShadow={'2xl'}
@@ -24,8 +24,13 @@ export default function ReportCard(props) {
       >
         <HStack width={'40vw'} justifyContent={'space-between'} m="1vw">
           <VStack spacing={2} align={'start'} m="1vw">
-            <Skeleton isLoaded={isLoaded}>
-              <Text as="b" fontSize={{sm:'lg', md:"xl"}}>
+            <Skeleton isLoaded={isLoaded} maxWidth={'20vw'}>
+              <Text
+                as="b"
+                align={'left'}
+                fontSize={{ sm: 'lg', md: 'xl' }}
+                noOfLines={2}
+              >
                 {props.title}
               </Text>
             </Skeleton>
@@ -35,11 +40,17 @@ export default function ReportCard(props) {
               </Text>
             </SkeletonText>
           </VStack>
-          <Skeleton isLoaded={isLoaded} m="2">
-            <Text as="b"  fontSize={{sm:'lg', md:"3xl"}} align="left" m="1vw">
+          <SkeletonText noOfLines={1} isLoaded={isLoaded} m="2" maxW={"12vw"}>
+            <Text
+              as="b"
+              fontSize={{ sm: 'lg', md: '2xl' }}
+              noOfLines={1}
+              align="left"
+              m="1vw"
+            >
               $ {props.value}
             </Text>
-          </Skeleton>
+          </SkeletonText>
         </HStack>
       </Stack>
     </>

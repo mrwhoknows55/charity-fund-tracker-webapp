@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Center, SimpleGrid, VStack, Skeleton } from '@chakra-ui/react';
+import { Center, SimpleGrid, VStack } from '@chakra-ui/react';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 import CharityCard from './CharityCard';
@@ -23,8 +23,8 @@ export default function ProductSimple() {
           setCharities(response.data.charities);
           console.log(response.data.charities);
           setTimeout(() => {
-             setLoading(false);
-          }, 2000)
+            setLoading(false);
+          }, 2000);
         }
       })
       .catch(err => {
@@ -32,7 +32,7 @@ export default function ProductSimple() {
         setLoading(false);
         console.log('Error: ' + err.message);
       });
-  }, []);
+  }, [history]);
 
   function openCharityDetails(e, charityId) {
     e.preventDefault();
@@ -46,11 +46,11 @@ export default function ProductSimple() {
         <SimpleGrid columns={4} spacing={'8'}>
           {charities.map(charity => (
             <React.Fragment key={charity.charity_id}>
-                <CharityCard
-                  charity={charity}
-                  openCharityDetails={openCharityDetails}
-                  isLoaded={!isLoading}
-                />
+              <CharityCard
+                charity={charity}
+                openCharityDetails={openCharityDetails}
+                isLoaded={!isLoading}
+              />
               {/* <Skeleton isLoaded={!isLoading}>
 
               </Skeleton> */}

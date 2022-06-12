@@ -22,14 +22,14 @@ export default function DonationCard(props) {
 
   async function donateEth() {
     const apiLink = `https://min-api.cryptocompare.com/data/price?fsym=ETH&tsyms=INR`;
-    console.log('LINK: ' + apiLink);
+    // console.log('LINK: ' + apiLink);
     await axios
       .get(apiLink)
       .then(response => {
-        console.log('response: ' + JSON.stringify(response));
+        // console.log('response: ' + JSON.stringify(response));
 
         if (response.data.INR) {
-          console.log(response.data.INR);
+          // console.log(response.data.INR);
           const mult = response.data.INR;
           setRate(mult.toString());
         } else {

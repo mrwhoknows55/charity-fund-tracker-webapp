@@ -5,8 +5,6 @@ import {
   Center,
   Heading,
   HStack,
-  Skeleton,
-  SkeletonCircle,
   VStack,
 } from '@chakra-ui/react';
 import DonationCard from './DonationCard';
@@ -23,10 +21,11 @@ class CharityHome extends PureComponent {
       profileImg: 'https://avatars.dicebear.com/api/male/username.svg',
       charityName: 'Charity Demo',
       charityWalletAddress: '',
-      expenses: [],
+      expenses: require('../data/fakeExpenses.json'),
       donations: [],
       donationList: [],
       fundEthContract: '',
+      contractAddress: '',
       account: '',
       smartContractLoaded: false,
       areDonationLoaded: false,
@@ -62,46 +61,6 @@ class CharityHome extends PureComponent {
         this.state.isProfileLoaded = true;
       });
 
-    await axios
-      .get('https://fundtracking.herokuapp.com/charity/profile/expenses', {
-        headers: { Authorization: 'Bearer ' + this.access_token },
-      })
-      .then(response => {
-        console.log(response.data);
-        if (response.data.status) {
-          this.setState({
-            expenses: response.data.expenses,
-          });
-          console.log(response.data.expenses);
-          this.state.areExpensesLoaded = true;
-        }
-      })
-      .catch(err => {
-        alert('Something went wrong');
-        console.log('Error: ' + err.message);
-        this.state.areExpensesLoaded = true;
-      });
-
-    await axios
-      .get('https://fundtracking.herokuapp.com/charity/profile/donations', {
-        headers: { Authorization: 'Bearer ' + this.access_token },
-      })
-      .then(response => {
-        console.log(response.data);
-        if (response.data.status) {
-          this.setState({
-            donations: response.data.donations,
-          });
-          console.log(response.data.donations);
-          this.state.areDonationLoaded = true;
-        }
-      })
-      .catch(err => {
-        alert('Something went wrong');
-        console.log('Error: ' + err.message);
-        this.state.areDonationLoaded = true;
-      });
-
     await this.loadWeb3();
     await this.loadWallet();
     await this.loadSmartConrtact();
@@ -118,6 +77,7 @@ class CharityHome extends PureComponent {
     // You can do a NULL check for the start/end blockNumber
     let web3 = window.web3;
     let endBlockNumber = 0;
+    let { contractAddress } = this.state;
 
     await web3.eth.getBlockNumber().then(res => {
       if (res) endBlockNumber = res;
@@ -132,69 +92,47 @@ class CharityHome extends PureComponent {
         endBlockNumber
     );
 
+    let t_expenses = [];
     for (var i = 0; i <= endBlockNumber; i++) {
       var block = web3.eth.getBlock(i, true);
-      block.then(resBlock => {
-        if (i < 10) console.log(resBlock);
-
-        let t_expenses = [];
+      await block.then(resBlock => {
         if (resBlock != null && resBlock.transactions != null) {
           resBlock.transactions.forEach(function (e) {
-            let t_transaction = {
-              nonce: e.nonce,
-              blockHash: e.blockHash,
-              blockNumber: e.blockNumber,
-              transactionIndex: e.transactionIndex,
-              from: e.from,
-              to: e.to,
-              value: window.web3.utils.fromWei(e.value, 'ether') + 'ETH',
-              gasPrice: e.gasPrice,
-              gas: e.gas,
-              timestamp: new Date(e.timestamp * 1000).toLocaleString(),
-            };
-            //   t_expenses.append(t_transaction);
             if (
-              accAddress == '*' ||
-              accAddress == e.from ||
-              accAddress == e.to
+              accAddress == e.from &&
+              e.from !== contractAddress &&
+              window.web3.utils.fromWei(e.value, 'ether') > 0
             ) {
-              console.log(
-                '  tx hash          : ' +
-                  e.hash +
-                  '\n' +
-                  '   nonce           : ' +
-                  e.nonce +
-                  '\n' +
-                  '   blockHash       : ' +
-                  e.blockHash +
-                  '\n' +
-                  '   blockNumber     : ' +
-                  e.blockNumber +
-                  '\n' +
-                  '   transactionIndex: ' +
-                  e.transactionIndex +
-                  '\n' +
-                  '   from            : ' +
-                  e.from +
-                  '\n' +
-                  '   to              : ' +
-                  e.to +
-                  '\n' +
-                  '   value           : ' +
-                  window.web3.utils.fromWei(e.value, 'ether') +
-                  'ETH \n' +
-                  '   gasPrice        : ' +
-                  e.gasPrice +
-                  '\n' +
-                  '   gas             : ' +
-                  e.gas +
-                  '\n'
-              );
+              let t_transaction = {
+                reason: 'Payment to: ' + e.to,
+                nonce: e.nonce,
+                blockHash: e.blockHash,
+                blockNumber: e.blockNumber,
+                transactionIndex: e.transactionIndex,
+                from: e.from,
+                to: e.to,
+                value: window.web3.utils.fromWei(e.value, 'ether') + ' ETH',
+                gasPrice: e.gasPrice,
+                gas: e.gas,
+                timestamp: new Date(resBlock.timestamp * 1000).toLocaleString(),
+              };
+              t_expenses.push(t_transaction);
             }
           });
         }
       });
     }
+    this.setState(
+      {
+        expenses: t_expenses.reverse(),
+        areExpensesLoaded: true,
+      },
+      () => {
+        console.log(`expenses: ${this.state.expenses}`);
+        console.log(JSON.stringify(this.state.expenses));
+        this.state.areExpensesLoaded = true;
+      }
+    );
   }
 
   async loadWeb3() {
@@ -240,6 +178,7 @@ class CharityHome extends PureComponent {
       this.setState({
         fundEthContract: fundEth_Contract,
         smartContractLoaded: true,
+        contractAddress: fundEthData.address,
       });
     } else {
       window.alert('fundEth contract not deployed to detected network.');
@@ -262,11 +201,13 @@ class CharityHome extends PureComponent {
           console.log(n);
           this.setState({
             donationList: n,
+            areDonationLoaded: true,
           });
         })
         .catch(err => {
           console.log(err);
           console.log(err.message);
+          this.state.areDonationLoaded = true;
         });
     } else {
       alert('smart contract not loaded!');
@@ -277,48 +218,27 @@ class CharityHome extends PureComponent {
     return (
       <>
         <Center>
-          <HStack
-            spacing={8}
-            align={'start'}
-            width={'100vw'}
-            overflowY={'hidden'}
-          >
-            <VStack
-              spacing={8}
-              m={'5vw'}
-              alignItems={'flex-start'}
-              width={'45vw'}
-            >
+          <HStack spacing={8} align={'start'}>
+            <VStack spacing={8} marginTop={90} alignItems={'flex-start'}>
               <HStack spacing={2}>
-                <SkeletonCircle
-                  width={'12vw'}
-                  height={'12vw'}
-                  isLoaded={this.state.isProfileLoaded}
-                >
-                  <Avatar
-                    width={'12vw'}
-                    height={'12vw'}
-                    src={this.state.profileImg}
-                    alt={'Avatar Alt'}
-                    pos={'relative'}
-                  />
-                </SkeletonCircle>
-
+                <Avatar
+                  size={'2xl'}
+                  src={this.state.profileImg}
+                  alt={'Avatar Alt'}
+                  pos={'relative'}
+                />
                 <VStack align={'start'} padding={10}>
-                  <Skeleton isLoaded={this.state.isProfileLoaded}>
-                    <Heading>{this.state.charityName}</Heading>
-                    <Button colorScheme={'teal'} size={'md'} m={'1vh'}>
-                      Edit Profile
-                    </Button>
-                  </Skeleton>
+                  <Heading>{this.state.charityName}</Heading>
+                  <Button colorScheme={'teal'} size={'md'}>
+                    Edit Profile
+                  </Button>
                 </VStack>
               </HStack>
               <Heading alignSelf={'start'} paddingTop={'5'}>
                 Latest Donations
               </Heading>
-
               {this.state.donationList.map((donation, index) => (
-                <React.Fragment key={index} width="50vw">
+                <React.Fragment key={index}>
                   <DonationCard
                     isLoaded={this.state.areDonationLoaded}
                     name={donation.doner}
@@ -337,7 +257,7 @@ class CharityHome extends PureComponent {
                 </React.Fragment>
               ))}
             </VStack>
-            <VStack spacing={8} py={'10vh'} width={'50vw'}>
+            <VStack spacing={8} px={12} py={24} marginTop={90}>
               <HStack spacing={8}>
                 <Heading alignSelf={'start'} paddingTop={'5'}>
                   Latest Expenses
@@ -354,10 +274,10 @@ class CharityHome extends PureComponent {
               {this.state.expenses.map(expense => (
                 <React.Fragment key={expense.expense_id}>
                   <ReportCard
-                    title={expense.reason}
-                    date={expense.date}
-                    value={expense.amount}
                     isLoaded={this.state.areExpensesLoaded}
+                    title={expense.reason}
+                    date={expense.timestamp}
+                    value={expense.value}
                   />
                 </React.Fragment>
               ))}
