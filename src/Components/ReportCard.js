@@ -20,15 +20,15 @@ export default function ReportCard(props) {
         padding={4}>
         <HStack width={'40vw'} justifyContent={'space-between'}>
           <VStack spacing={2} align={'start'} padding={10}>
-            <Text as='b' fontSize='xl'>
-              { props.title }
+            <Text as='b' fontSize='xl' title={props.title}>
+              { props.title.substr(0,18) }...{props.title.substr(props.title.length-4, props.title.length)}
             </Text>
             <Text as='i' fontSize='sm'>
               { props.date }
             </Text>
           </VStack>
-          <Text as='b' fontSize='4xl' align='left'  padding={10}>
-            $ { props.value }
+          <Text as='b' fontSize='2xl' align='left'  padding={10}>
+            { props.value }
           </Text>
         </HStack>
       </Stack>

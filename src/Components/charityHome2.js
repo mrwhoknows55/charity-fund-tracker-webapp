@@ -19,6 +19,7 @@ class charityHome2 extends PureComponent {
           donations: [],
           donationList: [],
           fundEthContract: '',
+          contractAddress: '',
           account: '',
           smartContractLoaded: false,
         }
@@ -51,36 +52,6 @@ class charityHome2 extends PureComponent {
             console.error(err);
         });
 
-        await  axios.get('https://fundtracking.herokuapp.com/charity/profile/expenses', { headers: { 'Authorization': 'Bearer ' + this.access_token } })
-        .then((response) => {
-            console.log(response.data);
-            if (response.data.status) {
-            this.setState({
-                expenses: response.data.expenses
-            });
-            console.log(response.data.expenses);
-            }
-        })
-        .catch((err) => {
-            alert('Something went wrong');
-            console.log('Error: ' + err.message);
-        });
-
-        await axios.get('https://fundtracking.herokuapp.com/charity/profile/donations', { headers: { 'Authorization': 'Bearer ' + this.access_token } })
-        .then((response) => {
-            console.log(response.data);
-            if (response.data.status) {
-                this.setState({
-                    donations: response.data.donations
-                });
-                console.log(response.data.donations);
-            }
-        })
-        .catch((err) => {
-            alert('Something went wrong');
-            console.log('Error: ' + err.message);
-        });
-
       await this.loadWeb3();
       await this.loadWallet();
       await this.loadSmartConrtact();
@@ -98,6 +69,7 @@ class charityHome2 extends PureComponent {
         // You can do a NULL check for the start/end blockNumber
         let web3 = window.web3
         let endBlockNumber = 0
+        let {contractAddress} = this.state;
     
         await web3.eth.getBlockNumber().then(res => {
           if(res)
@@ -106,44 +78,51 @@ class charityHome2 extends PureComponent {
       
         console.log("Searching for transactions to/from account \"" + accAddress + "\" within blocks "  + 0 + " and " + endBlockNumber);
       
+        let  t_expenses = []
         for (var i = 0; i <= endBlockNumber; i++) {
           var block = web3.eth.getBlock(i, true)
-          block.then(resBlock => {
-            if(i<10)
-              console.log(resBlock)
+          await block.then(resBlock => {
+            // if(i<10)
+            //   console.log(resBlock)
     
-              let  t_expenses = []
               if (resBlock != null && resBlock.transactions != null) {
                 resBlock.transactions.forEach( function(e) {
-                  let t_transaction = {
-                    nonce: e.nonce,
-                    blockHash: e.blockHash,
-                    blockNumber: e.blockNumber,
-                    transactionIndex: e.transactionIndex,
-                    from: e.from,
-                    to: e.to,
-                    value: window.web3.utils.fromWei( e.value , 'ether') + "ETH",
-                    gasPrice: e.gasPrice,
-                    gas: e.gas,
-                    timestamp: new Date(e.timestamp*1000).toLocaleString()
-                  };
-                //   t_expenses.append(t_transaction);
-                  if (accAddress == "*" || accAddress == e.from || accAddress == e.to) {
-                      console.log("  tx hash          : " + e.hash + "\n"
-                      + "   nonce           : " + e.nonce + "\n"
-                      + "   blockHash       : " + e.blockHash + "\n"
-                      + "   blockNumber     : " + e.blockNumber + "\n"
-                      + "   transactionIndex: " + e.transactionIndex + "\n"
-                      + "   from            : " + e.from + "\n" 
-                      + "   to              : " + e.to + "\n"
-                      + "   value           : " + window.web3.utils.fromWei( e.value , 'ether') + "ETH \n"
-                      + "   gasPrice        : " + e.gasPrice + "\n"
-                      + "   gas             : " + e.gas + "\n");
-                  }
+                    if (accAddress == e.from && e.from !== contractAddress && window.web3.utils.fromWei( e.value , 'ether') > 0) {
+                        let t_transaction = {
+                            reason: 'Payment to: ' + e.to,
+                            nonce: e.nonce,
+                            blockHash: e.blockHash,
+                            blockNumber: e.blockNumber,
+                            transactionIndex: e.transactionIndex,
+                            from: e.from,
+                            to: e.to,
+                            value: window.web3.utils.fromWei( e.value , 'ether') + " ETH",
+                            gasPrice: e.gasPrice,
+                            gas: e.gas,
+                            timestamp: new Date(resBlock.timestamp*1000).toLocaleString(),
+                        };
+                        //   t_expenses.append(t_transaction);
+                        // console.log("  tx hash          : " + e.hash + "\n"
+                        //     + "   nonce           : " + e.nonce + "\n"
+                        //     + "   blockHash       : " + e.blockHash + "\n"
+                        //     + "   blockNumber     : " + e.blockNumber + "\n"
+                        //     + "   transactionIndex: " + e.transactionIndex + "\n"
+                        //     + "   from            : " + e.from + "\n" 
+                        //     + "   to              : " + e.to + "\n"
+                        //     + "   value           : " + window.web3.utils.fromWei( e.value , 'ether') + "ETH \n"
+                        //     + "   gasPrice        : " + e.gasPrice + "\n"
+                        //     + "   gas             : " + e.gas + "\n");
+                        t_expenses.push(t_transaction);
+                    }
                 })
               }
-          })
+            })
         }
+        this.setState({
+            expenses: t_expenses.reverse()
+        }, () => {
+            console.log(this.state.expenses)
+        })
       }
     
     
@@ -184,7 +163,8 @@ class charityHome2 extends PureComponent {
             const fundEth_Contract = new web3.eth.Contract(fundEth.abi, fundEthData.address);
             this.setState({
                 fundEthContract: fundEth_Contract,
-                smartContractLoaded: true
+                smartContractLoaded: true,
+                contractAddress: fundEthData.address
             })
         } else {
             window.alert('fundEth contract not deployed to detected network.')
@@ -247,7 +227,7 @@ class charityHome2 extends PureComponent {
                     <React.Fragment key={index}>
 
                         <DonationCard
-                        avatarUrl={"https://www.logo-company.in/logo/best-logo-designer-company-389.jpg"}
+                        avatarUrl={"https://avatars.dicebear.com/api/male/username.svg"}
                         name={donation.doner}
                         date={(new Date(donation.date*1000)).getDay()+"/"+(new Date(donation.date*1000)).getMonth()+"/"+(new Date(donation.date*1000)).getFullYear()}
                         value={window.web3.utils.fromWei( donation.eth_in_wei , 'ether')}
@@ -272,8 +252,8 @@ class charityHome2 extends PureComponent {
 
                         <ReportCard
                         title={expense.reason}
-                        date={expense.date}
-                        value={expense.amount}
+                        date={expense.timestamp}
+                        value={expense.value}
                         />
                         </React.Fragment>
                     )
