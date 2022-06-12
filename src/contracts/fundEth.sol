@@ -3,7 +3,6 @@ pragma solidity 0.8.11;
 
 contract fundEth {
     uint donation_id = 1;
-    string blockHash;
 
     struct Donation {
         uint donation_id;
@@ -54,13 +53,26 @@ contract fundEth {
         return (d.donation_id, d.from_address, d.to_address, d.eth_in_wei, d.date, d.anonymous_state, d.doner, d.donerId, d.charity, d.charityId);
     }
 
-    function createExpense(string memory blockHash, string memory reason, address payable from) public returns(ExpenseReason memory) {
-        from.transfer(1);
+    function createExpense(string memory blockHash, string memory reason, address payable from) public payable returns(string memory, string memory) {
+        from.transfer(msg.value);
         ExpenseReason memory exReason = ExpenseReason(blockHash, reason);
         ExpenseReasons[from].push(exReason);
         ExpenseReasonByHash[blockHash] = exReason;
         ExpenseReason memory rs = ExpenseReasonByHash[blockHash];
-        return rs;
+        return (rs.blockHash, rs.reason);
+    }
+
+    function updateExpense(string memory blockHash, string memory reason, address payable from) public payable returns(string memory, string memory) {
+        from.transfer(msg.value);
+        // ExpenseReason[] memory exps = ExpenseReasons[from];
+        for(uint i=0; i<ExpenseReasons[from].length; i++)
+            if(keccak256(abi.encodePacked((ExpenseReasons[from][i].blockHash))) == keccak256(abi.encodePacked((blockHash)))) {
+                ExpenseReasons[from][i].reason = reason;
+                break;
+            }
+        ExpenseReasonByHash[blockHash].reason = reason;
+        ExpenseReason memory rs = ExpenseReasonByHash[blockHash];
+        return (rs.blockHash, rs.reason);
     }
 
     function getExpenseByHash(string memory blockHash) public view returns(ExpenseReason memory) {
