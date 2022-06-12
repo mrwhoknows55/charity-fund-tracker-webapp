@@ -436,7 +436,7 @@ class CharityDetails extends PureComponent {
                         <Button
                           colorScheme={'teal'}
                           size={'lg'}
-                          onClick={() => this.state.donateEth()}
+                          onClick={() => this.donateEth()}
                         >
                           Donate Funds
                         </Button>
