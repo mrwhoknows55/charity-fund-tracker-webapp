@@ -1,9 +1,9 @@
 module.exports = {
   networks: {
     development: {
-    //  host: "127.0.0.1",
-     host: "ganache.avdhut.live",
-     port: 8545,
+     host: "127.0.0.1",
+    //  host: "ganache.avdhut.live",
+     port: 7545,
      network_id: "*",
     },
   },

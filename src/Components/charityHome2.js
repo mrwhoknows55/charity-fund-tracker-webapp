@@ -14,6 +14,7 @@ class charityHome2 extends PureComponent {
       this.state = {
           profileImg: 'https://avatars.dicebear.com/api/male/username.svg',
           charityName: 'Charity Demo',
+          charityId: 0,
           charityWalletAddress: '',
           expenses: [],
           donations: [],
@@ -30,6 +31,9 @@ class charityHome2 extends PureComponent {
         this.loadSmartConrtact = this.loadSmartConrtact.bind(this);
         this.getAllDonations = this.getAllDonations.bind(this);
         this.getAccountTransactions = this.getAccountTransactions.bind(this);
+        this.getExpenseReason = this.getExpenseReason.bind(this);
+        this.add_exp = this.add_exp.bind(this);
+        this.getAllExp = this.getAllExp.bind(this);
 
     }
 
@@ -44,7 +48,8 @@ class charityHome2 extends PureComponent {
                 this.setState({
                     profileImg: response.data.user.profile_image,
                     charityName: response.data.user.name,
-                    charityWalletAddress: response.data.user.meta_wallet_address
+                    charityWalletAddress: response.data.user.meta_wallet_address,
+                    charityId: response.data.user.user_id
                 })
             }
         })
@@ -52,17 +57,11 @@ class charityHome2 extends PureComponent {
             console.error(err);
         });
 
-      await this.loadWeb3();
-      await this.loadWallet();
-      await this.loadSmartConrtact();
-      await this.getAllDonations();
-      await this.getAccountTransactions(this.state.charityWalletAddress);
-
-      this.loadWallet = this.loadWallet.bind(this);
-      this.loadWeb3 = this.loadWeb3.bind(this);
-      this.loadSmartConrtact = this.loadSmartConrtact.bind(this);
-      this.getAllDonations = this.getAllDonations.bind(this);
-
+        await this.loadWeb3();
+        await this.loadWallet();
+        await this.loadSmartConrtact();
+        await this.getAllDonations();
+        await this.getAccountTransactions(this.state.charityWalletAddress);
     }
 
     async getAccountTransactions(accAddress) {
@@ -87,7 +86,7 @@ class charityHome2 extends PureComponent {
     
               if (resBlock != null && resBlock.transactions != null) {
                 resBlock.transactions.forEach( function(e) {
-                    if (accAddress == e.from && e.from !== contractAddress && window.web3.utils.fromWei( e.value , 'ether') > 0) {
+                    if (accAddress === e.from && e.from !== contractAddress && window.web3.utils.fromWei( e.value , 'ether') > 0) {
                         let t_transaction = {
                             reason: 'Payment to: ' + e.to,
                             nonce: e.nonce,
@@ -96,10 +95,11 @@ class charityHome2 extends PureComponent {
                             transactionIndex: e.transactionIndex,
                             from: e.from,
                             to: e.to,
-                            value: window.web3.utils.fromWei( e.value , 'ether') + " ETH",
+                            value: e.value,
                             gasPrice: e.gasPrice,
                             gas: e.gas,
-                            timestamp: new Date(resBlock.timestamp*1000).toLocaleString(),
+                            date: new Date(resBlock.timestamp*1000).toLocaleString(),
+                            timestamp: resBlock.timestamp,
                         };
                         //   t_expenses.append(t_transaction);
                         // console.log("  tx hash          : " + e.hash + "\n"
@@ -123,7 +123,7 @@ class charityHome2 extends PureComponent {
         }, () => {
             console.log(this.state.expenses)
         })
-      }
+    }
     
     
     async loadWeb3() {
@@ -197,6 +197,66 @@ class charityHome2 extends PureComponent {
     }
     }
 
+    async getExpenseReason(blockHash) {
+        if(this.state.smartContractLoaded) {
+            let reason = '1-res';
+            await this.state.fundEthContract.methods
+            .getExpenseByHash(blockHash)
+            .call()
+            .then(res => {
+                console.log(res + '-' + blockHash);
+                reason = 'demo reason'
+                return reason;
+            }).catch(err => {
+                console.log(err)
+                console.log(err.message);
+                reason = 'err-res'
+                return reason;
+            })
+        }else{
+            alert("smart contract not loaded!")
+            return 'else-res'
+        }
+    }
+
+    async add_exp(blockHash) {
+        if(this.state.smartContractLoaded) {
+            this.state.fundEthContract.methods
+            .createExpense(
+                blockHash,
+                'some random reason 1',
+                this.state.charityWalletAddress
+            )
+            .call()
+            .then(res => {
+                console.log(res);
+            }).catch(err => {
+                console.log(err)
+                console.log(err.message);
+            })
+        }else{
+            alert("smart contract not loaded!")
+        }
+    }
+
+    async getAllExp() {
+        if(this.state.smartContractLoaded) {
+            this.state.fundEthContract.methods
+            .getExpenseByHash(
+                '0x5140e62f3991938b043cf05da4ed8dc767d6474e66c62079ca3400521aec1778'
+            )
+            .call()
+            .then(res => {
+                console.log(res);
+            }).catch(err => {
+                console.log(err)
+                console.log(err.message);
+            })
+        }else{
+            alert("smart contract not loaded!")
+        }
+    }
+
     render() {
         return (
             <>
@@ -214,7 +274,7 @@ class charityHome2 extends PureComponent {
                         <Heading>
                         {this.state.charityName}
                         </Heading>
-                        <Button colorScheme={'teal'} size={'md'}>
+                        <Button colorScheme={'teal'} size={'md'} onClick={this.getAllExp}>
                         Edit Profile
                         </Button>
                     </VStack>
@@ -247,14 +307,17 @@ class charityHome2 extends PureComponent {
                     </HStack>
                     </HStack>
                     {
-                    this.state.expenses.map((expense) =>
-                    <React.Fragment key={expense.expense_id}>
-
-                        <ReportCard
-                        title={expense.reason}
-                        date={expense.timestamp}
-                        value={expense.value}
-                        />
+                    this.state.expenses.map((expense, index) => 
+                        <React.Fragment key={index}>
+                            <ReportCard
+                            blockHash={expense.blockHash}
+                            expense={expense}
+                            title={expense.reason}
+                            getReason={this.getExpenseReason}
+                            date={expense.date}
+                            value={window.web3.utils.fromWei( expense.value , 'ether')}
+                            onclick_add={this.add_exp}
+                            />
                         </React.Fragment>
                     )
                     }
