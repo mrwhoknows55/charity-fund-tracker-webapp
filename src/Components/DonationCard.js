@@ -17,19 +17,15 @@ export default function DonationCard(props) {
   const [isCurrencyRateLoaded, setCurrencyRateLoaded] = useState(false);
 
   useEffect(() => {
-    donateEth();
+    getConversionRate();
   }, []);
 
-  async function donateEth() {
+  async function getConversionRate() {
     const apiLink = `https://min-api.cryptocompare.com/data/price?fsym=ETH&tsyms=INR`;
-    // console.log('LINK: ' + apiLink);
     await axios
       .get(apiLink)
       .then(response => {
-        // console.log('response: ' + JSON.stringify(response));
-
         if (response.data.INR) {
-          // console.log(response.data.INR);
           const mult = response.data.INR;
           setRate(mult.toString());
         } else {
@@ -66,7 +62,11 @@ export default function DonationCard(props) {
             </Skeleton>
           </VStack>
 
-          <SkeletonText noOfLines={3} padding={10} isLoaded={isLoaded && isCurrencyRateLoaded}>
+          <SkeletonText
+            noOfLines={3}
+            padding={10}
+            isLoaded={isLoaded && isCurrencyRateLoaded}
+          >
             <Text as="b" padding={10} fontSize="2xl">
               ETH {props.value} <br />
               <Text as="b" padding={10} fontSize="  2xl">
