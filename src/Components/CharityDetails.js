@@ -19,7 +19,6 @@ import axios from 'axios';
 import ReportCard from './ReportCard';
 import Web3 from 'web3';
 import fundEth from '../abi/fundEth.json';
-import AsyncSelect from 'react-select/async';
 import Select from 'react-select';
 
 const expenses = [
@@ -45,7 +44,6 @@ function CharityDetails() {
   const [charity, setCharity] = useState({});
   const [user, setUser] = useState({});
   const [fundEthContract, setFundEthContract] = useState(null);
-  const [contractAddress, setContractAddress] = useState('');
   const [account, setAccount] = useState('');
   const [smartContractLoaded, setSmartContractLoaded] = useState(false);
   const [ethAmount, setEthAmount] = useState('');
@@ -101,7 +99,7 @@ function CharityDetails() {
         console.log('Error: ' + err.message);
         setLoading(false);
       });
-  }, []);
+  }, [access_token, username]);
 
   async function loadWeb3() {
     try {
@@ -141,7 +139,6 @@ function CharityDetails() {
         fundEth.abi,
         fundEthData.address
       );
-      setContractAddress(fundEthData.address);
       setFundEthContract(fundEth_Contract);
       setSmartContractLoaded(true);
     } else {
@@ -214,6 +211,7 @@ function CharityDetails() {
         if (response.data.ETH) {
           console.log(response.data.ETH);
           const mult = response.data.ETH;
+          // eslint-disable-next-line
           const convertedEthValue = eval(ethAmount * mult);
           console.log('convertedEthValue: ' + convertedEthValue);
           sendEth(

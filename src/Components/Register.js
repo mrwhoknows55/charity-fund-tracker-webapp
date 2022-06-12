@@ -320,7 +320,8 @@ const Register = () => {
     } else {
       console.log('Metamask in not installed');
     }
-  }, []);
+    // eslint-disable-next-line
+  }, [ethereum, isMetamaskInstalled, walletAddress]);
 
   return (<>
     <Flex width={'100vw'} justifyContent={'center'} justifyItems={'center'} pos={'fixed'} mt={'7rem'}>

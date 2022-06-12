@@ -26,7 +26,9 @@ export default function Navbar(props) {
   const [accountType, setAccountType] = useState('');
   const [username, setUsername] = useState('Guest');
   const [loggedIn, setLoggedIn] = useState(false);
-  const [profileImg, setProfileImg] = useState('https://avatars.dicebear.com/api/male/username.svg');
+  const [profileImg, setProfileImg] = useState(
+    'https://avatars.dicebear.com/api/male/username.svg'
+  );
 
   useEffect(() => {
     const access_token = window.sessionStorage.getItem('access_token');
@@ -43,7 +45,10 @@ export default function Navbar(props) {
             setProfileImg(response.data.user.profile_image);
             setName(response.data.user.name);
             console.log(response.data.user.username);
-            if (accountType && (accountType === '' || accountType === 'doner')) {
+            if (
+              accountType &&
+              (accountType === '' || accountType === 'doner')
+            ) {
               console.log('homeURI: /');
               setHomeURI('/');
             } else {
@@ -52,41 +57,52 @@ export default function Navbar(props) {
             }
           }
         })
-        .catch((err) => {
+        .catch(err => {
           console.error(err);
         });
     } else {
       console.log('Navbar: user is not logged in yet');
     }
-  }, []);
+  }, [accountType]);
 
-  const onEditProfile = (e) => {
+  const onEditProfile = e => {
     e.preventDefault();
     //TODO
     window.alert('Edit Profile Clicked');
   };
 
-  const onLogout = (e) => {
+  const onLogout = e => {
     e.preventDefault();
     const access_token = window.sessionStorage.getItem('access_token');
     if (access_token != null) {
-      axios.post('https://fundtracking.herokuapp.com/user/logout', undefined, { headers: { 'Authorization': 'Bearer ' + access_token } })
+      axios
+        .post('https://fundtracking.herokuapp.com/user/logout', undefined, {
+          headers: { Authorization: 'Bearer ' + access_token },
+        })
         .then(response => {
           console.log(response);
           if (response.data.status) {
             console.log('successfully logged out!');
-            window.sessionStorage.setItem('access_token', 'access_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;');
+            window.sessionStorage.setItem(
+              'access_token',
+              'access_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;'
+            );
             window.sessionStorage.setItem('account_type', '');
           } else {
             console.log('something went wrong!');
           }
-        }).catch(e => {
-        window.sessionStorage.setItem('account_type', '');
-        window.sessionStorage.setItem('access_token', 'access_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;');
-        console.log(e);
-      }).finally(() => {
-        window.location.href = '/login';
-      });
+        })
+        .catch(e => {
+          window.sessionStorage.setItem('account_type', '');
+          window.sessionStorage.setItem(
+            'access_token',
+            'access_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;'
+          );
+          console.log(e);
+        })
+        .finally(() => {
+          window.location.href = '/login';
+        });
     } else {
       console.log('already logged out!');
       window.location.href = '/login';
@@ -114,26 +130,26 @@ export default function Navbar(props) {
               <a href={homeURI}>
                 <Button>Home</Button>
               </a>
-              {
-                (accountType === 'admin') ?
-                  <>
-                    {/*TODO Create these pages*/}
-                    <a href={'/charities'}>
-                      <Button>Charities</Button>
-                    </a>
-                    <a href={'/donors'}>
-                      <Button>Donors</Button>
-                    </a>
-                  </>
-                  : (accountType === 'charity') ?
-                    <>
-                      {/*TODO Create these pages*/}
-                      <a href={'/donors'}>
-                        <Button>Donors</Button>
-                      </a>
-                    </>
-                    : <></>
-              }
+              {accountType === 'admin' ? (
+                <>
+                  {/*TODO Create these pages*/}
+                  <a href={'/charities'}>
+                    <Button>Charities</Button>
+                  </a>
+                  <a href={'/donors'}>
+                    <Button>Donors</Button>
+                  </a>
+                </>
+              ) : accountType === 'charity' ? (
+                <>
+                  {/*TODO Create these pages*/}
+                  <a href={'/donors'}>
+                    <Button>Donors</Button>
+                  </a>
+                </>
+              ) : (
+                <></>
+              )}
               <a href={'/about'}>
                 <Button>About</Button>
               </a>
@@ -145,44 +161,40 @@ export default function Navbar(props) {
                   cursor={'pointer'}
                   minW={0}
                 >
-                  <Avatar
-                    size={'sm'}
-                    src={profileImg}
-                  />
+                  <Avatar size={'sm'} src={profileImg} />
                 </MenuButton>
                 <MenuList alignItems={'center'}>
                   <br />
                   <Center>
-                    <Avatar
-                      size={'2xl'}
-                      src={profileImg}
-                    />
+                    <Avatar size={'2xl'} src={profileImg} />
                   </Center>
                   <br />
                   <Center>
-                    <p style={{ 'fontWeight': '600', fontSize: '22px' }}>{name}</p>
+                    <p style={{ fontWeight: '600', fontSize: '22px' }}>
+                      {name}
+                    </p>
                   </Center>
                   <Center>
                     <p>{username}</p>
                   </Center>
                   <br />
                   <MenuDivider />
-                  {
-                    (loggedIn) ? <>
-                        <MenuItem onClick={(e) => onEditProfile(e)}>
-                          Edit Profile
-                        </MenuItem>
-                        <MenuItem onClick={(e) => onLogout(e)}>
-                          Logout
-                        </MenuItem>
-                      </>
-                      :
-                      <MenuItem onClick={() => {
-                        window.location.href = '/login';
-                      }}>
-                        Login
+                  {loggedIn ? (
+                    <>
+                      <MenuItem onClick={e => onEditProfile(e)}>
+                        Edit Profile
                       </MenuItem>
-                  }
+                      <MenuItem onClick={e => onLogout(e)}>Logout</MenuItem>
+                    </>
+                  ) : (
+                    <MenuItem
+                      onClick={() => {
+                        window.location.href = '/login';
+                      }}
+                    >
+                      Login
+                    </MenuItem>
+                  )}
                 </MenuList>
               </Menu>
             </Stack>

@@ -5,6 +5,8 @@ import {
   Center,
   Heading,
   HStack,
+  Skeleton,
+  SkeletonCircle,
   VStack,
 } from '@chakra-ui/react';
 import DonationCard from './DonationCard';
@@ -22,7 +24,7 @@ class CharityHome extends PureComponent {
       charityName: 'Charity Demo',
       charityWalletAddress: '',
       expenses: require('../data/fakeExpenses.json'),
-      donations: [],
+      donations: require('../data/fakeDonations.json'),
       donationList: [],
       fundEthContract: '',
       contractAddress: '',
@@ -30,6 +32,7 @@ class CharityHome extends PureComponent {
       smartContractLoaded: false,
       areDonationLoaded: false,
       areExpensesLoaded: false,
+      isProfileLoaded: false,
     };
 
     this.access_token = window.sessionStorage.getItem('access_token');
@@ -98,10 +101,13 @@ class CharityHome extends PureComponent {
       await block.then(resBlock => {
         if (resBlock != null && resBlock.transactions != null) {
           resBlock.transactions.forEach(function (e) {
+            let amountInEth = parseFloat(
+              window.web3.utils.fromWei(e.value, 'ether')
+            ).toFixed(4);
             if (
-              accAddress == e.from &&
+              accAddress === e.from &&
               e.from !== contractAddress &&
-              window.web3.utils.fromWei(e.value, 'ether') > 0
+              amountInEth > 0
             ) {
               let t_transaction = {
                 reason: 'Payment to: ' + e.to,
@@ -111,7 +117,7 @@ class CharityHome extends PureComponent {
                 transactionIndex: e.transactionIndex,
                 from: e.from,
                 to: e.to,
-                value: window.web3.utils.fromWei(e.value, 'ether') + ' ETH',
+                value: amountInEth,
                 gasPrice: e.gasPrice,
                 gas: e.gas,
                 timestamp: new Date(resBlock.timestamp * 1000).toLocaleString(),
@@ -198,7 +204,7 @@ class CharityHome extends PureComponent {
             return null;
           });
           n.reverse();
-          console.log(n);
+          console.log(`donations ${JSON.stringify(n)}`);
           this.setState({
             donationList: n,
             areDonationLoaded: true,
@@ -218,20 +224,39 @@ class CharityHome extends PureComponent {
     return (
       <>
         <Center>
-          <HStack spacing={8} align={'start'}>
-            <VStack spacing={8} marginTop={90} alignItems={'flex-start'}>
+          <HStack
+            spacing={8}
+            align={'start'}
+            width={'100vw'}
+            overflowY={'hidden'}
+          >
+            <VStack
+              spacing={8}
+              m={'5vw'}
+              alignItems={'flex-start'}
+              width={'45vw'}
+            >
               <HStack spacing={2}>
-                <Avatar
-                  size={'2xl'}
-                  src={this.state.profileImg}
-                  alt={'Avatar Alt'}
-                  pos={'relative'}
-                />
+                <SkeletonCircle
+                  width={'12vw'}
+                  height={'12vw'}
+                  isLoaded={this.state.isProfileLoaded}
+                >
+                  <Avatar
+                    width={'12vw'}
+                    height={'12vw'}
+                    src={this.state.profileImg}
+                    alt={'Avatar Alt'}
+                    pos={'relative'}
+                  />
+                </SkeletonCircle>
                 <VStack align={'start'} padding={10}>
-                  <Heading>{this.state.charityName}</Heading>
-                  <Button colorScheme={'teal'} size={'md'}>
-                    Edit Profile
-                  </Button>
+                  <Skeleton isLoaded={this.state.isProfileLoaded}>
+                    <Heading>{this.state.charityName}</Heading>
+                    <Button colorScheme={'teal'} size={'md'} m={'1vh'}>
+                      Edit Profile
+                    </Button>
+                  </Skeleton>
                 </VStack>
               </HStack>
               <Heading alignSelf={'start'} paddingTop={'5'}>
@@ -257,10 +282,10 @@ class CharityHome extends PureComponent {
                 </React.Fragment>
               ))}
             </VStack>
-            <VStack spacing={8} px={12} py={24} marginTop={90}>
+            <VStack spacing={8} py={'10vh'} width={'35vw'}>
               <HStack spacing={8}>
-                <Heading alignSelf={'start'} paddingTop={'5'}>
-                  Latest Expenses
+                <Heading alignSelf={'start'}  paddingTop={'5'}>
+                  Expenses
                 </Heading>
                 <HStack justifyContent={'end'} width={'25vw'}>
                   <Button colorScheme={'teal'} size={'lg'}>
