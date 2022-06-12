@@ -22,6 +22,7 @@ class CharityHome extends PureComponent {
     this.state = {
       profileImg: 'https://avatars.dicebear.com/api/male/username.svg',
       charityName: 'Charity Demo',
+      charityId: 0,
       charityWalletAddress: '',
       expenses: require('../data/fakeExpenses.json'),
       donations: require('../data/fakeDonations.json'),
@@ -41,6 +42,10 @@ class CharityHome extends PureComponent {
     this.loadSmartConrtact = this.loadSmartConrtact.bind(this);
     this.getAllDonations = this.getAllDonations.bind(this);
     this.getAccountTransactions = this.getAccountTransactions.bind(this);
+    this.getExpenseReason = this.getExpenseReason.bind(this);
+    this.add_exp = this.add_exp.bind(this);
+    this.update_exp = this.update_exp.bind(this);
+    this.getAllExp = this.getAllExp.bind(this);
   }
 
   async componentDidMount() {
@@ -55,8 +60,10 @@ class CharityHome extends PureComponent {
             profileImg: response.data.user.profile_image,
             charityName: response.data.user.name,
             charityWalletAddress: response.data.user.meta_wallet_address,
+            charityId: response.data.user.user_id,
+            isProfileLoaded: true
           });
-          this.state.isProfileLoaded = true;
+          // this.state.isProfileLoaded = true;
         }
       })
       .catch(err => {
@@ -70,10 +77,6 @@ class CharityHome extends PureComponent {
     await this.getAllDonations();
     await this.getAccountTransactions(this.state.charityWalletAddress);
 
-    this.loadWallet = this.loadWallet.bind(this);
-    this.loadWeb3 = this.loadWeb3.bind(this);
-    this.loadSmartConrtact = this.loadSmartConrtact.bind(this);
-    this.getAllDonations = this.getAllDonations.bind(this);
   }
 
   async getAccountTransactions(accAddress) {
@@ -81,6 +84,7 @@ class CharityHome extends PureComponent {
     let web3 = window.web3;
     let endBlockNumber = 0;
     let { contractAddress } = this.state;
+    console.log(contractAddress);
 
     await web3.eth.getBlockNumber().then(res => {
       if (res) endBlockNumber = res;
@@ -106,11 +110,12 @@ class CharityHome extends PureComponent {
             ).toFixed(4);
             if (
               accAddress === e.from &&
-              e.from !== contractAddress &&
+              e.to !== contractAddress &&
+              e.to !== '0x2c7A9696a85593e442f9BeFB99DDd8C8C98EC499' &&
               amountInEth > 0
             ) {
               let t_transaction = {
-                reason: 'Payment to: ' + e.to,
+                reason: '[Reason Not Submitted]',
                 nonce: e.nonce,
                 blockHash: e.blockHash,
                 blockNumber: e.blockNumber,
@@ -120,7 +125,8 @@ class CharityHome extends PureComponent {
                 value: amountInEth,
                 gasPrice: e.gasPrice,
                 gas: e.gas,
-                timestamp: new Date(resBlock.timestamp * 1000).toLocaleString(),
+                date: new Date(resBlock.timestamp*1000).toLocaleString(),
+                timestamp: resBlock.timestamp,
               };
               t_expenses.push(t_transaction);
             }
@@ -169,6 +175,8 @@ class CharityHome extends PureComponent {
     const accounts = await web3.eth.getAccounts();
     this.setState({
       account: accounts[0],
+    }, ()=>{
+      console.log(web3.eth.getBalance(this.state.account))
     });
   }
 
@@ -220,6 +228,96 @@ class CharityHome extends PureComponent {
     }
   }
 
+  async getExpenseReason(blockHash) {
+    if(this.state.smartContractLoaded) {
+        let reason = '';
+        await this.state.fundEthContract.methods
+        .getExpenseByHash(blockHash)
+        .call()
+        .then(res => {
+            console.log(res);
+            reason = res.reason;
+        }).catch(err => {
+            console.log(err)
+            console.log(err.message);
+            reason = 'No Reason Found!'
+        })
+        return reason;
+    }else{
+        alert("smart contract not loaded!")
+        return 'else-res'
+    }
+}
+
+async add_exp(blockHash, reason) {
+    let account = this.state.account;
+    console.log(account);
+    if(this.state.smartContractLoaded) {
+        this.state.fundEthContract.methods
+        .createExpense(
+            blockHash.toString(),
+            reason,
+            account
+        )
+        .send({
+          from: account,
+          value: 50000000000000,
+          gas: 274147,
+          gasPrice: 10000,
+        })
+        .then(res => {
+            console.log(res);
+        }).catch(err => {
+            console.log(err)
+            console.log(err.message);
+        })
+    }else{
+        alert("smart contract not loaded!")
+    }
+}
+async update_exp(blockHash, reason) {
+  let account = this.state.account;
+  console.log(account);
+    if(this.state.smartContractLoaded) {
+        this.state.fundEthContract.methods
+        .updateExpense(
+            blockHash.toString(),
+            reason,
+            account
+        )
+        .send({
+          from: account,
+          value: 50000000000000,
+        })
+        .then(res => {
+            console.log(res);
+        }).catch(err => {
+            console.log(err)
+            console.log(err.message);
+        })
+    }else{
+        alert("smart contract not loaded!")
+    }
+}
+
+async getAllExp() {
+    if(this.state.smartContractLoaded) {
+        this.state.fundEthContract.methods
+        .getExpensesOf(
+            '0x812351DC2369256E27DEFb0bF1568d782053eD65'
+        )
+        .call()
+        .then(res => {
+            console.log(res);
+        }).catch(err => {
+            console.log(err)
+            console.log(err.message);
+        })
+    }else{
+        alert("smart contract not loaded!")
+    }
+}
+
   render() {
     return (
       <>
@@ -253,7 +351,7 @@ class CharityHome extends PureComponent {
                 <VStack align={'start'} padding={10}>
                   <Skeleton isLoaded={this.state.isProfileLoaded}>
                     <Heading>{this.state.charityName}</Heading>
-                    <Button colorScheme={'teal'} size={'md'} m={'1vh'}>
+                    <Button colorScheme={'teal'} size={'md'} m={'1vh'} onClick={this.getAllExp}>
                       Edit Profile
                     </Button>
                   </Skeleton>
@@ -296,13 +394,18 @@ class CharityHome extends PureComponent {
                   </Button>
                 </HStack>
               </HStack>
-              {this.state.expenses.map(expense => (
-                <React.Fragment key={expense.expense_id}>
+              {this.state.expenses.map((expense, index) => (
+                <React.Fragment key={index}>
                   <ReportCard
+                    blockHash={expense.blockHash}
+                    expense={expense}
                     isLoaded={this.state.areExpensesLoaded}
                     title={expense.reason}
-                    date={expense.timestamp}
+                    getReason={this.getExpenseReason}
+                    date={expense.date}
                     value={expense.value}
+                    onclick_add={this.add_exp}
+                    onclick_update={this.update_exp}
                   />
                 </React.Fragment>
               ))}

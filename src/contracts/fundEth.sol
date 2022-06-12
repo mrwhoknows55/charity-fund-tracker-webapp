@@ -18,8 +18,16 @@ contract fundEth {
         bool donated;
     }
 
+    struct ExpenseReason {
+        string blockHash;
+        string reason;
+    }
+
     mapping(address => Donation[]) public Donations;
     mapping(uint => Donation) public DonationsById;
+
+    mapping(address => ExpenseReason[]) public ExpenseReasons;
+    mapping(string => ExpenseReason) public ExpenseReasonByHash;
 
     function createDonation(address payable to_address, uint256 date, bool anonymous_state, string memory doner, uint donerId, string memory charity, uint charityId) public payable returns(Donation memory) {
         require(msg.value > 0, "sender must send some value greater than 0 wei");
@@ -43,5 +51,36 @@ contract fundEth {
     function getDonationByID(uint d_id) public view returns(uint, address, address, uint, uint256, bool, string memory, uint, string memory, uint) {
         Donation memory d = DonationsById[d_id];
         return (d.donation_id, d.from_address, d.to_address, d.eth_in_wei, d.date, d.anonymous_state, d.doner, d.donerId, d.charity, d.charityId);
+    }
+
+    function createExpense(string memory blockHash, string memory reason, address payable from) public payable returns(string memory, string memory) {
+        from.transfer(msg.value);
+        ExpenseReason memory exReason = ExpenseReason(blockHash, reason);
+        ExpenseReasons[from].push(exReason);
+        ExpenseReasonByHash[blockHash] = exReason;
+        ExpenseReason memory rs = ExpenseReasonByHash[blockHash];
+        return (rs.blockHash, rs.reason);
+    }
+
+    function updateExpense(string memory blockHash, string memory reason, address payable from) public payable returns(string memory, string memory) {
+        from.transfer(msg.value);
+        // ExpenseReason[] memory exps = ExpenseReasons[from];
+        for(uint i=0; i<ExpenseReasons[from].length; i++)
+            if(keccak256(abi.encodePacked((ExpenseReasons[from][i].blockHash))) == keccak256(abi.encodePacked((blockHash)))) {
+                ExpenseReasons[from][i].reason = reason;
+                break;
+            }
+        ExpenseReasonByHash[blockHash].reason = reason;
+        ExpenseReason memory rs = ExpenseReasonByHash[blockHash];
+        return (rs.blockHash, rs.reason);
+    }
+
+    function getExpenseByHash(string memory blockHash) public view returns(ExpenseReason memory) {
+        ExpenseReason memory rs = ExpenseReasonByHash[blockHash];
+        return rs;
+    }
+
+    function getExpensesOf(address of_address) public view returns(ExpenseReason[] memory) {
+        return ExpenseReasons[of_address];
     }
 }
