@@ -262,8 +262,8 @@ async add_exp(blockHash, reason) {
         .send({
           from: account,
           value: 50000000000000,
-          gas: 274147,
-          gasPrice: 10000,
+          gas: 504405,
+          gasPrice: 9913,
         })
         .then(res => {
             console.log(res);
@@ -288,6 +288,8 @@ async update_exp(blockHash, reason) {
         .send({
           from: account,
           value: 50000000000000,
+          gas: 504405,
+          gasPrice: 9913,
         })
         .then(res => {
             console.log(res);
