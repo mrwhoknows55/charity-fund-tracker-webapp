@@ -84,7 +84,7 @@ export default function CharityCard(props) {
                   '                      needy people and also we donated money to desaster management commities...'}
             </Text>
             <br />
-            <Flex direction={'column'}>
+            {/* <Flex direction={'column'}>
               <Stack direction={'row'} align="flex-start">
                 <Text fontWeight={600} fontSize={'xl'}>
                   Funds: ₹ {charity.total_fundings}
@@ -95,7 +95,7 @@ export default function CharityCard(props) {
                   Expenditure: ₹ {charity.total_expenditure}
                 </Text>
               </Stack>
-            </Flex>
+            </Flex> */}
           </SkeletonText>
           <Skeleton isLoaded={isLoaded} m="8">
             <Flex paddingTop={'2vh'}>

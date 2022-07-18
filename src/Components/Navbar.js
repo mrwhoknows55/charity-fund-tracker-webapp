@@ -143,9 +143,9 @@ export default function Navbar(props) {
               ) : accountType === 'charity' ? (
                 <>
                   {/*TODO Create these pages*/}
-                  <a href={'/donors'}>
-                    <Button>Donors</Button>
-                  </a>
+                  {/* <a href={'/charities'}>
+                    <Button>Charities</Button>
+                  </a> */}
                 </>
               ) : (
                 <></>

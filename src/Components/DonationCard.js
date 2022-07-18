@@ -41,6 +41,8 @@ export default function DonationCard(props) {
   return (
     <>
       <Stack
+        onClick={()=>{window.location.href='/donations/'+props.donation_id}}
+        cursor={'pointer'}
         borderWidth="1px"
         borderRadius="lg"
         width={'40vw'}
@@ -68,9 +70,9 @@ export default function DonationCard(props) {
             isLoaded={isLoaded && isCurrencyRateLoaded}
           >
             <Text as="b" padding={10} fontSize="2xl">
-              ETH {props.value} <br />
-              <Text as="b" padding={10} fontSize="  2xl">
-                ≈ ₹ {Math.floor(parseFloat(props.value) * parseFloat(rate))}
+              ETH {parseFloat(props.value).toFixed(6)} <br />
+              <Text as="a" padding={10} fontSize="xl">
+                (₹ {Math.floor(parseFloat(props.value) * parseFloat(rate))})
               </Text>
             </Text>
           </SkeletonText>

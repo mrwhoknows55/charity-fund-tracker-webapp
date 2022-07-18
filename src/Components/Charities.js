@@ -80,7 +80,7 @@ export default function Charities() {
                       align='justify'>{charity.description ? charity.description.substring(0, 340) + '...' : 'This NGO is working since 2000. In this 20 years we taking many activities for\n' +
                       '                      needy people and also we donated money to desaster management commities...'}</Text>
                     <br />
-                    <Flex direction={'column'}>
+                    {/* <Flex direction={'column'}>
                       <Stack direction={'row'} align='flex-start'>
                         <Text fontWeight={600} fontSize={'xl'}>
                           Funds: ₹ {charity.total_fundings}
@@ -91,7 +91,7 @@ export default function Charities() {
                           Expenditure: ₹ {charity.total_expenditure}
                         </Text>
                       </Stack>
-                    </Flex>
+                    </Flex> */}
                     <Flex paddingTop={'2vh'}>
                       <Button background={'teal.500'} textColor={'white'}
                               onClick={(e) => openCharityDetails(e, charity.username)}> More
