@@ -365,6 +365,7 @@ async getAllExp() {
               {this.state.donationList.map((donation, index) => (
                 <React.Fragment key={index}>
                   <DonationCard
+                    donation_id={donation.donation_id}
                     isLoaded={this.state.areDonationLoaded}
                     name={donation.doner}
                     date={
@@ -383,19 +384,19 @@ async getAllExp() {
               ))}
             </VStack>
             <VStack spacing={8} py={'10vh'} width={'35vw'}>
-              <HStack spacing={8}>
+              {/* <HStack spacing={8}> */}
                 <Heading alignSelf={'start'}  paddingTop={'5'}>
                   Expenses
                 </Heading>
-                <HStack justifyContent={'end'} width={'25vw'}>
+                {/* <HStack justifyContent={'end'} width={'25vw'}>
                   <Button colorScheme={'teal'} size={'lg'}>
                     Add Expense
                   </Button>
                   <Button colorScheme={'teal'} size={'lg'}>
                     Add Report
                   </Button>
-                </HStack>
-              </HStack>
+                </HStack> */}
+              {/* </HStack> */}
               {this.state.expenses.map((expense, index) => (
                 <React.Fragment key={index}>
                   <ReportCard

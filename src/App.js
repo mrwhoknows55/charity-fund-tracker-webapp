@@ -15,6 +15,7 @@ import Charities from './Components/Charities';
 import DonorDonationCard from './Components/DonorDonationCard';
 import DonorDonationsList from './Components/DonorDonationsList';
 import DonationDetail from './Components/DonationDetail';
+import './style.css';
 
 class App extends PureComponent {
   render() {

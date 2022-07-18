@@ -12,6 +12,7 @@ import {
     Skeleton,
     SkeletonText,
     SkeletonCircle,
+    Stack,
 } from '@chakra-ui/react';
 import axios from 'axios';
 import ReportCard from './ReportCard';
@@ -394,7 +395,7 @@ class CharityDetails extends PureComponent {
                               ? this.state.charity.charityDetails.founded_in
                               : ''}
                           </Text>
-                          <Text>
+                          {/* <Text>
                             Total Funding: ₹{' '}
                             {this.state.charity.charityDetails &&
                             this.state.charity.charityDetails.total_fundings
@@ -407,7 +408,7 @@ class CharityDetails extends PureComponent {
                             this.state.charity.charityDetails.total_expenditure
                               ? this.state.charity.charityDetails.total_expenditure
                               : ``}
-                          </Text>
+                          </Text> */}
                         </VStack>
                       </SkeletonText>
                     </HStack>
@@ -525,7 +526,35 @@ class CharityDetails extends PureComponent {
                         Latest Expenses
                       </Heading>
                     </Skeleton>
-                    {this.state.expenses.map((expense, index) => (
+                    {
+                      this.state.expenses.length==0 && this.state.areExpensesLoaded?
+                      <Stack
+                        borderWidth="2px"
+                        borderRadius="lg"
+                        w={'45vw'}
+                        height={'14vh'}
+                        direction={{ base: 'column', md: 'row' }}
+                        boxShadow={'2xl'}
+                        padding={4}
+                        cursor={'pointer'}
+                      >
+                        <HStack width={'40vw'} justifyContent={'space-between'} m="1vw">
+                          <VStack spacing={2} align={'start'} m="1vw">
+                              <Text
+                                as="b"
+                                align={'left'}
+                                fontSize={{ sm: 'lg', md: 'xl' }}
+                                noOfLines={2}>
+                                No Expense Data Found
+                              </Text>
+                          </VStack>
+                        </HStack>
+                      </Stack>
+                      :null
+
+                    }
+                    {
+                    this.state.expenses.map((expense, index) => (
                       <React.Fragment key={index}>
                           <ReportCard
                             view={'doner'}
@@ -538,7 +567,8 @@ class CharityDetails extends PureComponent {
                             value={expense.value}
                           />
                       </React.Fragment>
-                    ))}
+                    ))
+                    }
                   </VStack>
                 </HStack>
               </VStack>
