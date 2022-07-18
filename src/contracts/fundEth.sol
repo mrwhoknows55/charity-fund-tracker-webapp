@@ -30,7 +30,7 @@ contract fundEth {
     mapping(string => ExpenseReason) public ExpenseReasonByHash;
 
     function createDonation(address payable to_address, uint256 date, bool anonymous_state, string memory doner, uint donerId, string memory charity, uint charityId) public payable returns(Donation memory) {
-        require(msg.value > 0, "sender must send some value greater than 0 wei");
+        require(msg.value > 0, "sender must send some value greater than 0 wei");   
         to_address.transfer(msg.value);
             Donation memory donation_data;
         if(anonymous_state)
