@@ -163,7 +163,7 @@ class DonationDetail extends PureComponent {
             {
                 this.state.isDonationLoaded?
                 <VStack>
-                    <Stack overflow={'scroll'}>
+                    <Stack className="scrolling-component" overflow={'scroll'}>
                         <HStack width={'80vw'} justifyContent={'space-evenly'}>
                             <SkeletonText noOfLines={3} paddingTop={10} isLoaded={this.state.isCurrencyRateLoaded}>
                                 <Text  paddingRight={2} display={'inline-block'} fontSize="md">Donation Made By &nbsp; </Text>
