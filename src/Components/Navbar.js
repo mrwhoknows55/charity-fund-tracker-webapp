@@ -184,6 +184,12 @@ export default function Navbar(props) {
                       <MenuItem onClick={e => onEditProfile(e)}>
                         Edit Profile
                       </MenuItem>
+                      {
+                      accountType === 'doner'?
+                      <MenuItem onClick={e => window.location.href = '/my-donations'}>
+                        My Donations
+                      </MenuItem>:null
+                      }
                       <MenuItem onClick={e => onLogout(e)}>Logout</MenuItem>
                     </>
                   ) : (

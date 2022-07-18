@@ -48,9 +48,9 @@ contract fundEth {
         return Donations[of_address];
     }
 
-    function getDonationByID(uint d_id) public view returns(uint, address, address, uint, uint256, bool, string memory, uint, string memory, uint) {
+    function getDonationByID(uint d_id) public view returns(Donation memory) {
         Donation memory d = DonationsById[d_id];
-        return (d.donation_id, d.from_address, d.to_address, d.eth_in_wei, d.date, d.anonymous_state, d.doner, d.donerId, d.charity, d.charityId);
+        return d;
     }
 
     function createExpense(string memory blockHash, string memory reason, address payable from) public payable returns(string memory, string memory) {
