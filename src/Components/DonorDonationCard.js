@@ -64,10 +64,10 @@ import {
                 </Heading>
               </Skeleton>
                 <SkeletonText noOfLines={3} padding={10} isLoaded={isLoaded && isCurrencyRateLoaded} >
-                    <Text as="b" padding={10} fontSize="2xl">
-                        ETH {props.value} <br />
-                        <Text as="b" padding={10} fontSize="  2xl">
-                        ≈ ₹ {Math.floor(parseFloat(props.value) * parseFloat(rate))}
+                    <Text noOfLines={2} as="b" padding={10} paddingRight={0} fontSize="2xl">
+                        ETH {parseFloat(props.value).toFixed(6)} <br/>
+                        <Text as="b" fontSize="2xl">
+                        (₹ {Math.floor(parseFloat(props.value) * parseFloat(rate))} )
                         </Text>
                     </Text>
                 </SkeletonText>
