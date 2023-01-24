@@ -19,6 +19,7 @@ import ReportCard from './ReportCard';
 import Web3 from 'web3';
 import fundEth from '../abi/fundEth.json';
 import Select from 'react-select';
+import { API_URL } from '../Constants';
 const currencies = require('../data/currencies.json');
 
 const temp_expenses = [
@@ -84,7 +85,7 @@ class CharityDetails extends PureComponent {
         await this.loadWallet();
         await this.loadSmartConrtact();
         await axios
-            .get('https://fundtracking.herokuapp.com/user/profile', {
+            .get(`${API_URL}/user/profile`, {
             headers: { Authorization: 'Bearer ' + this.state.access_token },
             })
             .then(response => {
@@ -98,7 +99,7 @@ class CharityDetails extends PureComponent {
             });
 
         await axios
-            .get(`https://fundtracking.herokuapp.com/charity/${this.username}`)
+            .get(`${API_URL}/charity/${this.username}`)
             .then(response => {
                 if (response.data.status) {
                     console.log(response.data);

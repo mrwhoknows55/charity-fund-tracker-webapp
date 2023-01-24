@@ -1,11 +1,8 @@
 import React, { PureComponent } from 'react';
 import {
-  Avatar,
-  Button,
   Center,
   Heading,
   HStack,
-  useColorModeValue,
   Stack,
   Text,
   VStack,
@@ -14,6 +11,7 @@ import axios from 'axios';
 import Web3 from 'web3';
 import fundEth from '../abi/fundEth.json';
 import DonorDonationCard from './DonorDonationCard';
+import { API_URL } from '../Constants';
 
 class DonorDonationsList extends PureComponent {
   constructor(props) {
@@ -36,7 +34,7 @@ class DonorDonationsList extends PureComponent {
 
   async componentDidMount() {
     await axios
-      .get('https://fundtracking.herokuapp.com/user/profile', {
+      .get(`${API_URL}/user/profile`, {
         headers: { Authorization: 'Bearer ' + this.access_token },
       })
       .then(response => {
@@ -102,7 +100,7 @@ class DonorDonationsList extends PureComponent {
   }
 
   async getAllDonations() {
-        axios.get('https://fundtracking.herokuapp.com/doner/donations', {
+        axios.get(`${API_URL}/doner/donations`, {
             headers: { Authorization: 'Bearer ' + this.access_token },
         }).then(res => {
             console.log(res)

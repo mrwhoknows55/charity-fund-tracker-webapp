@@ -18,6 +18,7 @@ import fundEth from '../abi/fundEth.json';
 import DonorDonationCard from './DonorDonationCard';
 import NoDonationModal from './NoDonationModal';
 import { Link } from 'react-router-dom';
+import { API_URL } from '../Constants';
 
 class DonationDetail extends PureComponent {
   constructor(props) {
@@ -88,7 +89,7 @@ class DonationDetail extends PureComponent {
   }
 
   async getDonationsById() {
-    await axios.get('https://fundtracking.herokuapp.com/donations/details/'+this.state.id+'')
+    await axios.get('/donations/details/'+this.state.id+'')
     .then(res => {
         console.log(res);
         this.setState({
@@ -124,7 +125,7 @@ class DonationDetail extends PureComponent {
   }
 
   async openCharityPage() {
-    await axios.get('https://fundtracking.herokuapp.com/charity/id/'+this.state.donation.charityId)
+    await axios.get(`${API_URL}/charity/id/'+this.state.donation.charityId`)
     .then(res => {
         if(res.data.status) {
             window.location.href = '/charity/'+res.data.charity.username;

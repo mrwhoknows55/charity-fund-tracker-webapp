@@ -15,6 +15,7 @@ import {
 } from '@chakra-ui/react';
 import axios from 'axios';
 import { useHistory } from 'react-router-dom';
+import { API_URL } from '../Constants';
 
 export default function Admin() {
   useHistory();
@@ -26,7 +27,7 @@ export default function Admin() {
   useEffect(() => {
     const access_token = window.sessionStorage.getItem('access_token');
     axios
-      .get('https://fundtracking.herokuapp.com/admin/charities', {
+      .get(`${API_URL}/admin/charities`, {
         headers: { Authorization: 'Bearer ' + access_token },
       })
       .then(response => {
@@ -51,7 +52,7 @@ export default function Admin() {
     const access_token = window.sessionStorage.getItem('access_token');
     axios
       .post(
-        'https://fundtracking.herokuapp.com/admin/charity/verify',
+        `${API_URL}/admin/charity/verify`,
         { username: username, accepted: isAccepted },
         { headers: { Authorization: 'Bearer ' + access_token } }
       )

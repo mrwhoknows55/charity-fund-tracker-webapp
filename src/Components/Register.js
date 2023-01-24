@@ -29,6 +29,7 @@ import {
 import ConnectingToWallet from './ConnectingToWallet';
 import axios from 'axios';
 import { FilePicker } from 'react-file-picker';
+import { API_URL } from '../Constants';
 
 const CFaUserAlt = chakra(FaUserAlt);
 const CFaLock = chakra(FaLock);
@@ -62,7 +63,7 @@ const SignUp = (props) => {
     formData.append('meta_wallet_address', walletAddress);
     formData.append('profile_photo', profileImg);
 
-    axios.post('https://fundtracking.herokuapp.com/user/register', formData)
+    axios.post(`${API_URL}/user/register`, formData)
       .then(response => {
         console.log(response);
         if (response.data.status && response.data.access_token) {

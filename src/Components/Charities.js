@@ -2,13 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { Box, Button, Center, Flex, Heading, Image, SimpleGrid, Stack, Text, VStack } from '@chakra-ui/react';
 import axios from 'axios';
 import { useHistory } from 'react-router-dom';
+import { API_URL } from '../Constants';
 
 export default function Charities() {
   const history = useHistory();
   const [charities, setCharities] = useState([]);
 
   useEffect(() => {
-    axios.get('https://fundtracking.herokuapp.com/charity')
+    axios.get(`${API_URL}/charity`)
       .then((response) => {
         if (response.data.status) {
           setCharities(response.data.charities);

@@ -31,6 +31,7 @@ import ConnectingToWallet from './ConnectingToWallet';
 import axios from 'axios';
 import { FilePicker } from 'react-file-picker';
 import { SampleDesc } from '../SampleText';
+import { API_URL } from '../Constants';
 
 const CFaUserAlt = chakra(FaUserAlt);
 const CFaLock = chakra(FaLock);
@@ -68,7 +69,7 @@ const CharitySignup = props => {
     formData.append('description', desc ? desc : SampleDesc);
 
     axios
-      .post('https://fundtracking.herokuapp.com/user/register', formData)
+      .post(`${API_URL}/user/register`, formData)
       .then(response => {
         console.log(response);
         if (response.data.status && response.data.access_token) {

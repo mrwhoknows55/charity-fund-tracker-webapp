@@ -17,6 +17,7 @@ import {
 } from '@chakra-ui/react';
 import { MoonIcon, SunIcon } from '@chakra-ui/icons';
 import axios from 'axios';
+import { API_URL } from '../Constants';
 
 export default function Navbar(props) {
   const { colorMode, toggleColorMode } = useColorMode();
@@ -35,7 +36,7 @@ export default function Navbar(props) {
     setAccountType(window.sessionStorage.getItem('account_type'));
     if (access_token) {
       axios
-        .get('https://fundtracking.herokuapp.com/user/profile', {
+        .get(`${API_URL}/user/profile`, {
           headers: { Authorization: 'Bearer ' + access_token },
         })
         .then(response => {
@@ -76,7 +77,7 @@ export default function Navbar(props) {
     const access_token = window.sessionStorage.getItem('access_token');
     if (access_token != null) {
       axios
-        .post('https://fundtracking.herokuapp.com/user/logout', undefined, {
+        .post(`${API_URL}/user/logout`, undefined, {
           headers: { Authorization: 'Bearer ' + access_token },
         })
         .then(response => {

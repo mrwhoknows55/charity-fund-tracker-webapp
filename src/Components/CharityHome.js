@@ -14,6 +14,7 @@ import ReportCard from './ReportCard';
 import axios from 'axios';
 import Web3 from 'web3';
 import fundEth from '../abi/fundEth.json';
+import { API_URL } from '../Constants';
 
 class CharityHome extends PureComponent {
   constructor(props) {
@@ -50,7 +51,7 @@ class CharityHome extends PureComponent {
 
   async componentDidMount() {
     await axios
-      .get('https://fundtracking.herokuapp.com/user/profile', {
+      .get(`${API_URL}/user/profile`, {
         headers: { Authorization: 'Bearer ' + this.access_token },
       })
       .then(response => {

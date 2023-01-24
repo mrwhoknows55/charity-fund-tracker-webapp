@@ -17,6 +17,7 @@ import {
 import { FaLock, FaUserAlt } from 'react-icons/fa';
 import axios from 'axios';
 import { useHistory } from 'react-router-dom';
+import { API_URL } from '../Constants';
 
 const CFaUserAlt = chakra(FaUserAlt);
 const CFaLock = chakra(FaLock);
@@ -34,7 +35,7 @@ const Login = () => {
     e.preventDefault();
 
     axios
-      .post('https://fundtracking.herokuapp.com/user/login', {
+      .post(`${API_URL}/user/login`, {
         email: email,
         password: password,
       })

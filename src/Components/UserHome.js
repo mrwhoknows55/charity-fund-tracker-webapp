@@ -3,6 +3,7 @@ import { Center, SimpleGrid, VStack } from '@chakra-ui/react';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 import CharityCard from './CharityCard';
+import { API_URL } from '../Constants';
 
 export default function ProductSimple() {
   const history = useHistory();
@@ -17,7 +18,7 @@ export default function ProductSimple() {
     }
 
     axios
-      .get('https://fundtracking.herokuapp.com/charity')
+      .get(`${API_URL}/charity`)
       .then(response => {
         if (response.data.status) {
           setCharities(response.data.charities);
