@@ -33,60 +33,60 @@ class DonationDetail extends PureComponent {
       isCurrencyRateLoaded: false,
       rate: '1.0'
     };
-    this.loadWeb3 = this.loadWeb3.bind(this);
-    this.loadSmartConrtact = this.loadSmartConrtact.bind(this);
+    // this.loadWeb3 = this.loadWeb3.bind(this);
+    // this.loadSmartConrtact = this.loadSmartConrtact.bind(this);
     this.getDonationsById = this.getDonationsById.bind(this);
     this.getConversionRate = this.getConversionRate.bind(this);
     this.openCharityPage = this.openCharityPage.bind(this);
   }
 
   async componentDidMount() {
-    await this.loadWeb3();
-    await this.loadSmartConrtact();
+    // await this.loadWeb3();
+    // await this.loadSmartConrtact();
     await this.getDonationsById();
     await this.getConversionRate();
   }
 
-  async loadWeb3() {
-    try {
-      if (window.ethereum) {
-        window.web3 = new Web3(window.ethereum);
-        await window.ethereum.enable();
-        console.log('User meta mask connection successful !');
-      } else if (window.web3) {
-        window.web3 = new Web3(window.web3.currentProvider);
-        console.log('User meta mask connection successful!');
-      } else {
-        window.alert(
-          'Non-Ethereum browser detected. You should consider trying MetaMask!'
-        );
-      }
-    } catch (e) {
-      if (e.code) {
-        console.log('User meta mask connection request rejected!');
-      } else {
-        console.log(e.message);
-      }
-    }
-  }
+  // async loadWeb3() {
+  //   try {
+  //     if (window.ethereum) {
+  //       window.web3 = new Web3(window.ethereum);
+  //       await window.ethereum.enable();
+  //       console.log('User meta mask connection successful !');
+  //     } else if (window.web3) {
+  //       window.web3 = new Web3(window.web3.currentProvider);
+  //       console.log('User meta mask connection successful!');
+  //     } else {
+  //       window.alert(
+  //         'Non-Ethereum browser detected. You should consider trying MetaMask!'
+  //       );
+  //     }
+  //   } catch (e) {
+  //     if (e.code) {
+  //       console.log('User meta mask connection request rejected!');
+  //     } else {
+  //       console.log(e.message);
+  //     }
+  //   }
+  // }
 
-  async loadSmartConrtact(e) {
-    let web3 = await window.web3;
-    const networkId = await web3.eth.net.getId();
-    const fundEthData = fundEth.networks[networkId];
-    if (fundEthData) {
-      const fundEth_Contract = new web3.eth.Contract(
-        fundEth.abi,
-        fundEthData.address
-      );
-      this.setState({
-        fundEthContract: fundEth_Contract,
-        smartContractLoaded: true,
-      });
-    } else {
-      window.alert('fundEth contract not deployed to detected network.');
-    }
-  }
+  // async loadSmartConrtact(e) {
+  //   let web3 = await window.web3;
+  //   const networkId = await web3.eth.net.getId();
+  //   const fundEthData = fundEth.networks[networkId];
+  //   if (fundEthData) {
+  //     const fundEth_Contract = new web3.eth.Contract(
+  //       fundEth.abi,
+  //       fundEthData.address
+  //     );
+  //     this.setState({
+  //       fundEthContract: fundEth_Contract,
+  //       smartContractLoaded: true,
+  //     });
+  //   } else {
+  //     window.alert('fundEth contract not deployed to detected network.');
+  //   }
+  // }
 
   async getDonationsById() {
     await axios.get(`${API_URL}/donations/details/`+this.state.id+``)
