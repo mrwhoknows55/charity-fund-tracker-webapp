@@ -89,7 +89,7 @@ class DonationDetail extends PureComponent {
   }
 
   async getDonationsById() {
-    await axios.get('/donations/details/'+this.state.id+'')
+    await axios.get(`${API_URL}/donations/details/`+this.state.id+``)
     .then(res => {
         console.log(res);
         this.setState({
